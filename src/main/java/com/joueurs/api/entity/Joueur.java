@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -32,8 +34,12 @@ public class Joueur implements Serializable {
 	@Column(name="prenom")
 	private String prenom;
 	
-	@Column(name="poste")
-	private String poste;
+	@Column(name="date_naissance")
+	private Date dateNaissance;
+	
+	@OneToOne 
+	@JoinColumn(name="poste_id", referencedColumnName="id")
+	private Poste poste;
 	
 	@Column(name="nbr_point_obtenu")
 	private int nbrPointObtenu;
@@ -41,14 +47,16 @@ public class Joueur implements Serializable {
 	@Column(name="classement")
 	private int classement;
 	
-	@Column(name="selection")
-	private String selection;
+	@OneToOne 
+	@JoinColumn(name="selection_id", referencedColumnName="id")
+	private Selection selection;
 	
-	@Column(name="annee")
-	private String annee;
+	@Column(name="annee_Recompense")
+	private String anneeRecompense;
 	
-	@Column(name="club")
-	private String club;
+	@OneToOne 
+	@JoinColumn(name="club_id", referencedColumnName="id")
+	private Club club;
 	
 
 }

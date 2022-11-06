@@ -1,4 +1,5 @@
 package com.joueurs.api.service;
+import java.util.List;
 import java.util.Map;
 
 import com.joueurs.api.dto.JoueurCreateDTO;
@@ -16,5 +17,7 @@ public interface IJoueurService  {
 	JoueurDTO updateJoueur(long id,JoueurCreateDTO joueurCreateDto);
 	
 	Map<String,Boolean> deleteJoueur(long joueurId);
+	
+	List<JoueurDTO> SearchJoueurByNameOrPrenom(String name);
 	
 }

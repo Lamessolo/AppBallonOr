@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-
 import com.joueurs.api.dto.JoueurCreateDTO;
 import com.joueurs.api.dto.JoueurDTO;
 import com.joueurs.api.entity.Club;
@@ -139,6 +138,13 @@ public class JoueurServiceImpl implements IJoueurService {
 		response.put("deleted", Boolean.TRUE);
 		return response;
 		
+	}
+
+	@Override
+	public List<JoueurDTO> SearchJoueurByNameOrPrenom(String name) {
+		List<Joueur> searchJoueurByName = joueurRepository.SearchByNameOrPrenom(name);
+		List<JoueurDTO> joueurs = searchJoueurByName.stream().map(this::mapEntityToDTO).collect(Collectors.toList());
+		return joueurs;
 	}
 			
 	}

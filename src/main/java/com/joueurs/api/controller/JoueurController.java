@@ -1,5 +1,6 @@
 package com.joueurs.api.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joueurs.api.utils.ConstanteApp;
-
 import com.joueurs.api.dto.JoueurCreateDTO;
 import com.joueurs.api.dto.JoueurDTO;
 import com.joueurs.api.service.IJoueurService;
@@ -65,6 +65,13 @@ private final IJoueurService joueurService;
 	public ResponseEntity<Map<String,Boolean>> deleteJoueur(@PathVariable("id") long joueurId){		
 		return new ResponseEntity<>(joueurService.deleteJoueur(joueurId), HttpStatus.OK);
 	}
+	
+	
+	@GetMapping("/search/{name}")
+	public ResponseEntity<List<JoueurDTO>> getJoueurByName(@PathVariable("name") String name){
+		List<JoueurDTO> joueurs = joueurService.SearchJoueurByNameOrPrenom(name);
+		return new ResponseEntity<>(joueurs, HttpStatus.OK);
+		}
 	
 	
 }

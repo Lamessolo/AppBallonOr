@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 public class BlogAPIException extends RuntimeException{
 
 	
-	private  HttpStatus status ;
-	private  String message ;
+	private final HttpStatus status ;
+	private final String message ;
 	
 	public BlogAPIException(HttpStatus status,String message) {
 		this.message = message;
@@ -23,6 +23,7 @@ public class BlogAPIException extends RuntimeException{
 		return status;
 	}
 	
+	@Override
 	public String getMessage() {
 		return message;
 	}

@@ -1,6 +1,6 @@
 package com.joueurs.api.entity;
 
-import java.sql.Date;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +27,7 @@ public class Club {
 	@Column(name="name")
 	private String name;
 	
-	@Column(name="paysduclub")
+	@Column(name="pays")
 	private String pays;
 	
 }

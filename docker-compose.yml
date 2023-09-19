@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mysqldbapijoueurs:
+    container_name: mysqldbapijoueurs
+    image: mysql
+    environment: 
+       MYSQL_DATABASE: databasejoueurs
+       MYSQL_ROOT_PASSWORD: Ruben92
+    networks:
+      - springboot-mysql 
+
+  api-joueurs:
+    container_name: api-joueurs
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysqldbapijoueurs
+    networks:
+      springboot-mysql:
+    restart: on-failure
+
+networks:
+  springboot-mysql:
+
+    

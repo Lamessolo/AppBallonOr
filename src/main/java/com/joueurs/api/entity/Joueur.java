@@ -1,7 +1,6 @@
 package com.joueurs.api.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.Date;
 
 import javax.persistence.Column;
@@ -13,13 +12,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.joueurs.api.utils.JoueurHelpers;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+@Data
 @Entity
 @Table(name="tbl_joueur")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Joueur implements Serializable {
@@ -47,6 +47,9 @@ public class Joueur implements Serializable {
 	@Column(name="classement")
 	private int classement;
 	
+	@Column(name="imageUrl")
+	private String imageUrl;
+	
 	@OneToOne 
 	@JoinColumn(name="selection_id", referencedColumnName="id")
 	private Selection selection;
@@ -58,5 +61,9 @@ public class Joueur implements Serializable {
 	@JoinColumn(name="club_id", referencedColumnName="id")
 	private Club club;
 	
+	public int getAge() {
+		
+		return JoueurHelpers.calculAgeJoueurRecompense(dateNaissance,anneeRecompense);
+	}
 
 }

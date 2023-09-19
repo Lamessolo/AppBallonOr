@@ -21,6 +21,8 @@ public class JoueurCreateDTO {
 	
 	private Date dateNaissance;
 	
+	private String imageUrl;
+	
 	private long poste;
 	
 	private int nbrPointObtenu;

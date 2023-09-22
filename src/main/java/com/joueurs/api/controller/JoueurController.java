@@ -132,10 +132,10 @@ private final IJoueurService joueurService;
 			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
 			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy,
 			@RequestParam(required=false)String anneeRecompense,
-			@RequestParam (required=false)Integer posteId,
-			@RequestParam (required=false)Integer classement){	
+			@RequestParam (required=false)Long posteId,
+			@RequestParam (required=false)Long classement){	
 		   		
-		    return joueurService.findJoueurByParametres(pageNo,pageSize,sortBy,anneeRecompense,posteId,classement);	
+		    return joueurService.findJoueurByParametres(posteId,classement,anneeRecompense,pageNo,pageSize,sortBy);	
 	}
 	
 	

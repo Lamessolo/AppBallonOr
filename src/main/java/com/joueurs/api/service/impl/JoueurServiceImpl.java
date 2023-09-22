@@ -235,11 +235,16 @@ public class JoueurServiceImpl implements IJoueurService {
 	}
 
 	@Override
-	public PaginationResponse findJoueurByParametres(int pageNo, int pageSize, String sortBy, String anneeRecompense,
-			Integer posteId,Integer classement) {
+	public PaginationResponse findJoueurByParametres( 
+			Long posteId,
+			Long classement,
+			String anneeRecompense,
+			int pageNo,
+			int pageSize,
+			String sortBy) {
 		
 		PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
-		Page<Joueur> listeDesJoueursByParametres = joueurRepository.findJoueurByAnneeRecompenseAndPosteIdAndClassement(anneeRecompense,posteId,classement,pageable);
+		Page<Joueur> listeDesJoueursByParametres = joueurRepository.findJoueurByAnneeRecompenseAndPosteIdAndClassement(posteId,classement,anneeRecompense,pageable);
 		List<Joueur> joueursByMotClef = listeDesJoueursByParametres.getContent();
 		List<JoueurDTO> contentJoueurByParametres = joueursByMotClef
 				.stream().map(this::mapEntityToDTO).collect(Collectors.toList());

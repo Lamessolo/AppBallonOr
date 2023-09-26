@@ -15,15 +15,11 @@ import org.springframework.stereotype.Service;
 
 import com.joueurs.api.dto.SelectionCreateDTO;
 import com.joueurs.api.dto.SelectionDTO;
-import com.joueurs.api.entity.Club;
-import com.joueurs.api.entity.Joueur;
-import com.joueurs.api.entity.Poste;
+
 import com.joueurs.api.entity.Selection;
 import com.joueurs.api.repository.SelectionRepository;
-
 import com.joueurs.api.service.ISelectionService;
 import com.joueurs.api.utils.PaginationSelectionResponse;
-
 
 import lombok.RequiredArgsConstructor;
 
@@ -107,6 +103,27 @@ public class SelectionServiceImpl implements ISelectionService{
 	        throw new IllegalArgumentException("Une erreur de contrainte s'est produite lors de la création de la sélection.");
 	    }
 	    		
+	}
+	@Override
+	public PaginationSelectionResponse findSelectionByConfederation(String confederation, int pageNo, int pageSize,
+			String sortBy) {
+		
+	PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
+		
+	
+		Page<Selection> listeDesSelectionByConfederation = selectionRepository.findByConfederation(confederation,pageable);
+		List<Selection> selectionsByConfederarion = listeDesSelectionByConfederation.getContent();
+		List<SelectionDTO> SelectionByConfederation = selectionsByConfederarion.stream().map(this::mapEntityToDTO).collect(Collectors.toList());
+		
+		PaginationSelectionResponse pageSelectionsResponse = new PaginationSelectionResponse();
+		pageSelectionsResponse.setContent(SelectionByConfederation);
+		pageSelectionsResponse.setPageNo(listeDesSelectionByConfederation.getNumber());
+		pageSelectionsResponse.setPageSize(listeDesSelectionByConfederation.getSize());
+		pageSelectionsResponse.setTotalElements(listeDesSelectionByConfederation.getTotalElements());
+		pageSelectionsResponse.setTotalPages(listeDesSelectionByConfederation.getTotalPages());
+		pageSelectionsResponse.setLast(listeDesSelectionByConfederation.isLast());
+		return pageSelectionsResponse;
+			
 	}
 
 }

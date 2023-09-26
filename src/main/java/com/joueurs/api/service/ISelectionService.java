@@ -14,4 +14,7 @@ public interface ISelectionService {
 	Map<String,Boolean> deleteSelection(long selectionId);
 
 	SelectionDTO createSelection(SelectionCreateDTO selectionCreateDto);
+
+	PaginationSelectionResponse findSelectionByConfederation(String confederation, int pageNo, int pageSize,
+			String sortBy);
 }

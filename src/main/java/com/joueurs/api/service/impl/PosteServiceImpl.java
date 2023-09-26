@@ -2,7 +2,7 @@ package com.joueurs.api.service.impl;
 
 import java.util.List;
 import java.util.Map;
-
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -53,9 +53,15 @@ public class PosteServiceImpl implements IPosteService {
 	@Override
 	public PosteDTO findPosteById(long id) {
 	
-		Poste posteById = posteRepository.findById(id)
-				.orElseThrow(()-> new ResourceNotFoundException("Poste","id",id));		
+	Optional<Poste> posteByIdOptional = posteRepository.findById(id);
+	if (posteByIdOptional.isPresent()) {
+		Poste posteById = posteByIdOptional.get();
 		return mapEntityToDTO(posteById);
+	}else {
+		return null;
+	}
+					
+		
 		
 	}
 

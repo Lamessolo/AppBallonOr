@@ -54,20 +54,21 @@ private final IJoueurService joueurService;
 		return new ResponseEntity<>(joueur, HttpStatus.OK);
 		}
 	
+	
 	@PostMapping("/add")
-	public ResponseEntity<JoueurDTO> createAdherent(@RequestBody JoueurCreateDTO joueurCreateDto){		
+	public ResponseEntity<JoueurDTO> createJoueur(@RequestBody JoueurCreateDTO joueurCreateDto){		
 		JoueurDTO newJoueur = joueurService.createJoueur(joueurCreateDto);
 		return new ResponseEntity<>(newJoueur, HttpStatus.CREATED);	
 	}
 		
-	@PutMapping("update/{id}")
-	public ResponseEntity<JoueurDTO> updateAdherent(@PathVariable("id") long joueurId,@RequestBody JoueurCreateDTO joueurCreateDto){
+	@PutMapping("{id}")
+	public ResponseEntity<JoueurDTO> updateJoueur(@PathVariable("id") long joueurId,@RequestBody JoueurCreateDTO joueurCreateDto){
 		JoueurDTO updatedJoueur =  joueurService.updateJoueur(joueurId,joueurCreateDto);		 
 		return new ResponseEntity<>(updatedJoueur,HttpStatus.OK);
 		
 	}
 	
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<Map<String,Boolean>> deleteJoueur(@PathVariable("id") long joueurId){		
 		return new ResponseEntity<>(joueurService.deleteJoueur(joueurId), HttpStatus.OK);
 	}
@@ -126,16 +127,30 @@ private final IJoueurService joueurService;
 		return joueurService.findByClubId(pageNo,pageSize,sortBy,byClubId);
 	}
 	
-	@GetMapping("/searchByParametres")
-	public PaginationResponse getJoueurByParametres(
+	@GetMapping("/searchByParametres/poste/{posteId}/classement/{classement}/annee/{anneeRecompense}")
+	public PaginationResponse searchJoueurByParametres(
+			@PathVariable("posteId")int posteId,
+			@PathVariable("classement")int classement,
+			@PathVariable("anneeRecompense")String anneeRecompense,
 			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
 			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
-			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy,
-			@RequestParam(required=false)String anneeRecompense,
-			@RequestParam (required=false)Long posteId,
-			@RequestParam (required=false)Long classement){	
-		   		
+			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy)
+	{		   		
 		    return joueurService.findJoueurByParametres(posteId,classement,anneeRecompense,pageNo,pageSize,sortBy);	
+	}
+	
+	
+	
+	@GetMapping("/poste/{posteId}/classement/{classement}")
+	public PaginationResponse getJoueurByParametres(
+			@PathVariable("posteId")int posteId,
+			@PathVariable("classement")int classement,
+			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
+			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
+			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy)
+			{	
+		
+		    return joueurService.findJoueurByPosteAndClassementParametres(posteId,classement,pageNo,pageSize,sortBy);	
 	}
 	
 	

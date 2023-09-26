@@ -42,9 +42,11 @@ public interface JoueurRepository extends JpaRepository<Joueur,Long> {
 					+ "anneeRecompense LIKE (:annee)")
 			List<Joueur> searchJoueurByAnnee (@Param("annee") String annee);
 
-	@Query("SELECT j FROM Joueur j WHERE (:posteId IS NULL OR j.poste.id = :posteId) AND (:anneeRecompense IS NULL OR j.anneeRecompense = :anneeRecompense) AND (:classement IS NULL OR j.classement = :classement)")
-		Page<Joueur> findJoueurByAnneeRecompenseAndPosteIdAndClassement(@Param("posteId")Long posteId,@Param("classement")Long classement,@Param("anneeRecompense")String anneeRecompense, PageRequest pageable);
-	              
+	@Query("SELECT j FROM Joueur j WHERE (:posteId = 0 OR j.poste.id = :posteId) AND (:anneeRecompense IS NULL OR j.anneeRecompense = :anneeRecompense) AND (:classement = 0  OR j.classement = :classement)")
+	Page<Joueur> findJoueurByAnneeRecompenseAndPosteIdAndClassement(@Param("posteId")int posteId,@Param("classement")int classement,@Param("anneeRecompense")String anneeRecompense, PageRequest pageable);
+	   
+	@Query("SELECT j FROM Joueur j WHERE (:posteId = 0 OR j.poste.id = :posteId) AND (:classement = 0 OR j.classement = :classement)")
+	Page<Joueur> findJoueurByPosteIdAndClassement(@Param("posteId")int posteId,@Param("classement")Integer classement, PageRequest pageable);
 
 			
 

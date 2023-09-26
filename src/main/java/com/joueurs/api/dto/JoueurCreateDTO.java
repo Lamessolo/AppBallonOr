@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class JoueurCreateDTO {
 
-	private long id;
-
 	private String name;
 	
 	private String prenom;

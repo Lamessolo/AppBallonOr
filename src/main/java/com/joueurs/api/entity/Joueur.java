@@ -47,7 +47,7 @@ public class Joueur implements Serializable {
 	@Column(name="classement")
 	private int classement;
 	
-	@Column(name="imageUrl")
+	@Column(name="image_url")
 	private String imageUrl;
 	
 	@OneToOne 

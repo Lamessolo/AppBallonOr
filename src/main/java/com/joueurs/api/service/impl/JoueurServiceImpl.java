@@ -1,9 +1,9 @@
 package com.joueurs.api.service.impl;
-import com.joueurs.api.exception.ResourceNotFoundException;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -50,24 +50,38 @@ public class JoueurServiceImpl implements IJoueurService {
 	
 	@Override
 	public JoueurDTO createJoueur(JoueurCreateDTO joueurCreateDto) {
-		// Je transforme le JoueurDTO en une nouvelle entité Joueur
-		       Joueur joueurNew = mapDtoToEntity(joueurCreateDto);
-				Poste posteNew = posteRepository.findById(joueurCreateDto.getPoste())
-						.orElseThrow(()->  new ResourceNotFoundException("Poste", "id", joueurCreateDto.getPoste()));
-						
-				Selection selectionNew = selectionRepository.findById(joueurCreateDto.getSelection())
-						.orElseThrow(()-> new ResourceNotFoundException("Selection","id",joueurCreateDto.getSelection()));
-				Club clubNew = clubRepository.findById(joueurCreateDto.getClub())
-						.orElseThrow(()-> new ResourceNotFoundException("Club","id",joueurCreateDto.getClub()));
+		 // Validation des données d'entrée
+	    if (joueurCreateDto == null || joueurCreateDto.getName() == null)
+	    {
+	        throw new IllegalArgumentException("Données d'entrée invalides.");
+	    }
 				
-				joueurNew.setPoste(posteNew);
-				joueurNew.setSelection(selectionNew);
-				joueurNew.setClub(clubNew);
+		// Je transforme le JoueurDTO en une nouvelle entité Joueur
+		       Joueur createNewJoueur = mapDtoToEntity(joueurCreateDto);   
+				Optional<Poste> posteNewOptional  = posteRepository.findById(joueurCreateDto.getPoste());					
+				Optional<Selection> selectionNewOptional  = selectionRepository.findById(joueurCreateDto.getSelection());					
+				Optional<Club> clubNewOptional  = clubRepository.findById(joueurCreateDto.getClub());
+						
+				
+				// Vérifiez si les objets Optionals contiennent des valeurs avant d'extraire les entités
+				if (posteNewOptional.isPresent() && selectionNewOptional.isPresent() && clubNewOptional.isPresent()){
+				    Poste posteNew = posteNewOptional.get();
+				    Selection selectionNew = selectionNewOptional.get();
+				    Club clubNew = clubNewOptional.get();
+				    
+				    createNewJoueur.setPoste(posteNew);
+				    createNewJoueur.setSelection(selectionNew);
+				    createNewJoueur.setClub(clubNew);
 				
 				// Je sauve une entité dans la base			 
-				joueurRepository.save(joueurNew);
+				joueurRepository.save(createNewJoueur);
 				
-				return mapEntityToDTO(joueurNew);
+				return mapEntityToDTO(createNewJoueur);
+				}else {
+				    // Gérez le cas où l'une des entités n'a pas été trouvée
+				    // Vous pouvez générer une exception, renvoyer une erreur, ou prendre d'autres mesures appropriées.
+				    throw new IllegalArgumentException("Une erreur est survenue lors de la creation du joueur."); // ou une autre valeur appropriée
+				}
 	}
 
 	@Override
@@ -90,50 +104,72 @@ public class JoueurServiceImpl implements IJoueurService {
 	}
 
 	@Override
-	public JoueurDTO findJoueurById(long joueurId) {	
-			Joueur entityJoueur = joueurRepository.findById(joueurId)
-					.orElseThrow(()-> new ResourceNotFoundException("Joueur","id",joueurId));		
-			return mapEntityToDTO(entityJoueur);
+	public JoueurDTO findJoueurById(long joueurId) {
 		
+			Optional<Joueur> entityJoueurOptional = joueurRepository.findById(joueurId);
+			if (entityJoueurOptional.isPresent())
+			{ Joueur joueurFindById   = entityJoueurOptional.get();
+			return mapEntityToDTO(joueurFindById);
+			}
+			else 
+			{
+				throw new IllegalArgumentException("L'id du joueur n'est pas bon");
+			}
+							
 	}
 
 	@Override
 	public JoueurDTO updateJoueur(long joueurId, JoueurCreateDTO joueurCreateDto) {
 		
 			// Recuperer l'entite Joueur by Id
-			Joueur joueurEntite = joueurRepository.findById(joueurId)
-					.orElseThrow(()-> new ResourceNotFoundException("Joueur", "id", joueurId));
+			Optional<Joueur> joueurEntiteOptional = joueurRepository.findById(joueurId);
+					//.orElseThrow(()-> new ResourceNotFoundException("Joueur", "id", joueurId));
 			
-			Poste posteDuJoueur = posteRepository.findById(joueurCreateDto.getPoste())
-					.orElseThrow(()-> new ResourceNotFoundException("Poste", "id", joueurCreateDto.getPoste()));
-			Selection selectionDuJoueur = selectionRepository.findById(joueurCreateDto.getSelection())
-					.orElseThrow(()-> new ResourceNotFoundException("Selection","id",joueurCreateDto.getSelection()));
-			Club clubDuJoueur = clubRepository.findById(joueurCreateDto.getClub())
-					.orElseThrow(()-> new ResourceNotFoundException("Club","id",joueurCreateDto.getClub()));
+			Optional<Poste> posteJoueurOptional = posteRepository.findById(joueurCreateDto.getPoste());
+					//.orElseThrow(()-> new ResourceNotFoundException("Poste", "id", joueurCreateDto.getPoste()));
+			Optional<Selection> selectionJoueurOptional = selectionRepository.findById(joueurCreateDto.getSelection());
+					//.orElseThrow(()-> new ResourceNotFoundException("Selection","id",joueurCreateDto.getSelection()));
+			Optional<Club> clubJoueurOptional = clubRepository.findById(joueurCreateDto.getClub());
+					//.orElseThrow(()-> new ResourceNotFoundException("Club","id",joueurCreateDto.getClub()));
 			
-			joueurEntite.setName(joueurCreateDto.getName());
-			joueurEntite.setPrenom(joueurCreateDto.getPrenom());
-			joueurEntite.setDateNaissance(joueurCreateDto.getDateNaissance());
-			joueurEntite.setClassement(joueurCreateDto.getClassement());
-			joueurEntite.setNbrPointObtenu(joueurCreateDto.getNbrPointObtenu());
-			joueurEntite.setAnneeRecompense(joueurCreateDto.getAnneeRecompense());
-			joueurEntite.setClub(clubDuJoueur);
-			joueurEntite.setSelection(selectionDuJoueur);
-			joueurEntite.setPoste(posteDuJoueur);
-					
-			Joueur joueurUpdated = joueurRepository.save(joueurEntite);
-			
-			return mapEntityToDTO(joueurUpdated);
+					// Vérifiez si les objets Optionals contiennent des valeurs avant d'extraire les entités
+					if (joueurEntiteOptional.isPresent()&&posteJoueurOptional.isPresent() 
+							&& selectionJoueurOptional.isPresent() 
+							&& clubJoueurOptional.isPresent())
+					{
+						    Joueur joueurNew = joueurEntiteOptional.get();
+						    Poste posteNew = posteJoueurOptional.get();
+						    Selection selectionNew = selectionJoueurOptional.get();
+						    Club clubNew = clubJoueurOptional.get();
+						    
+						    joueurNew.setName(joueurCreateDto.getName());
+							joueurNew.setPrenom(joueurCreateDto.getPrenom());
+							joueurNew.setDateNaissance(joueurCreateDto.getDateNaissance());
+							joueurNew.setClassement(joueurCreateDto.getClassement());
+							joueurNew.setNbrPointObtenu(joueurCreateDto.getNbrPointObtenu());
+							joueurNew.setAnneeRecompense(joueurCreateDto.getAnneeRecompense());
+							joueurNew.setClub(clubNew);
+							joueurNew.setSelection(selectionNew);
+							joueurNew.setPoste(posteNew);
+							
+							Joueur joueurUpdated = joueurRepository.save(joueurNew);
+							return mapEntityToDTO(joueurUpdated);
+					}else{
+						// Gérez le cas où l'une des entités n'a pas été trouvée
+					    // Vous pouvez générer une exception, renvoyer une erreur, ou prendre d'autres mesures appropriées.
+					    return null; // ou une autre valeur appropriée
+					}
+																
 		}
 	
 	public Map<String,Boolean> deleteJoueur(long joueurId) {
-		Joueur entityJoueur = joueurRepository.findById(joueurId)
-				.orElseThrow(()->new ResourceNotFoundException("Joueur","id", joueurId ));
+		Optional<Joueur> entityJoueurOptional = joueurRepository.findById(joueurId);
+			Joueur entityJoueur = entityJoueurOptional.get();
+				//.orElseThrow(()->new ResourceNotFoundException("Joueur","id", joueurId ));
 		joueurRepository.delete(entityJoueur);
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("deleted", Boolean.TRUE);
-		return response;
-		
+		return response;	
 	}
 
 
@@ -234,14 +270,34 @@ public class JoueurServiceImpl implements IJoueurService {
 		return pageJoueursResponse;
 	}
 
+	
 	@Override
-	public PaginationResponse findJoueurByParametres( 
-			Long posteId,
-			Long classement,
-			String anneeRecompense,
+	public PaginationResponse findJoueurByPosteAndClassementParametres( 
+			int posteId,
+			int classement,
 			int pageNo,
 			int pageSize,
 			String sortBy) {
+		
+		PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
+		Page<Joueur> listeDesJoueursByParametres = joueurRepository.findJoueurByPosteIdAndClassement(posteId,classement,pageable);
+		List<Joueur> joueursByMotClef = listeDesJoueursByParametres.getContent();
+		List<JoueurDTO> contentJoueurByParametres = joueursByMotClef
+				.stream().map(this::mapEntityToDTO).collect(Collectors.toList());
+		
+		PaginationResponse pageJoueursResponse = new PaginationResponse();
+		pageJoueursResponse.setContent(contentJoueurByParametres);
+		pageJoueursResponse.setPageNo(listeDesJoueursByParametres.getNumber());
+		pageJoueursResponse.setPageSize(listeDesJoueursByParametres.getSize());
+		pageJoueursResponse.setTotalElements(listeDesJoueursByParametres.getTotalElements());
+		pageJoueursResponse.setTotalPages(listeDesJoueursByParametres.getTotalPages());	
+		return pageJoueursResponse;
+	}
+
+	@Override
+	public PaginationResponse findJoueurByParametres(int posteId,int classement, String anneeRecompense, int pageNo, int pageSize,
+			String sortBy) 
+	{
 		
 		PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
 		Page<Joueur> listeDesJoueursByParametres = joueurRepository.findJoueurByAnneeRecompenseAndPosteIdAndClassement(posteId,classement,anneeRecompense,pageable);

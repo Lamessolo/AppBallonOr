@@ -34,13 +34,16 @@ public interface IJoueurService  {
 	List<JoueurDTO> searchJoueurByAnnee(String annee);
 
 	PaginationResponse findJoueurByParametres(
-		Long posteId,
-			Long classement,
+		int posteId,
+			int classement,
 			String anneeRecompense,
 			int pageNo, int pageSize, 
 			String sortBy);
 
-	
+	PaginationResponse findJoueurByPosteAndClassementParametres(int posteId,
+			int classement,
+			int pageNo, int pageSize, 
+			String sortBy);
 
 	
 

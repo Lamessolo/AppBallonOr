@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.joueurs.api.dto.SelectionCreateDTO;
 import com.joueurs.api.dto.SelectionDTO;
-
 import com.joueurs.api.service.ISelectionService;
 import com.joueurs.api.utils.ConstanteApp;
-import com.joueurs.api.utils.PaginationClubResponse;
+
 import com.joueurs.api.utils.PaginationSelectionResponse;
 
 import lombok.RequiredArgsConstructor;

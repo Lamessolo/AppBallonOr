@@ -46,23 +46,38 @@ private final IJoueurService joueurService;
 		
 	@GetMapping("/{id}")
 	public ResponseEntity<JoueurDTO> getJoueurById(@PathVariable("id") long joueurId){
-		if(joueurId < 0){
-			throw new JoueurNotFoundException("Joueur id not found " + joueurId);
+		try {
+			JoueurDTO joueur = joueurService.findJoueurById(joueurId);
+			return new ResponseEntity<>(joueur, HttpStatus.OK);
+		}catch(JoueurNotFoundException e) {
+			 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		JoueurDTO joueur = joueurService.findJoueurById(joueurId);
-		return new ResponseEntity<>(joueur, HttpStatus.OK);
+	
 		}
 	
 	@PostMapping("/add")
-	public ResponseEntity<JoueurDTO> createJoueur(@RequestBody JoueurCreateDTO joueurCreateDto){		
-		JoueurDTO newJoueur = joueurService.createJoueur(joueurCreateDto);
-		return new ResponseEntity<>(newJoueur, HttpStatus.CREATED);	
+	public ResponseEntity<JoueurDTO> createJoueur(@RequestBody JoueurCreateDTO joueurCreateDto){
+		try {
+			JoueurDTO newJoueur = joueurService.createJoueur(joueurCreateDto);
+			return new ResponseEntity<>(newJoueur, HttpStatus.CREATED);	
+		} catch(Exception e) {
+			
+			  return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);}
+	
 	}
 		
 	@PutMapping("{id}")
-	public ResponseEntity<JoueurDTO> updateJoueur(@PathVariable("id") long joueurId,@RequestBody JoueurCreateDTO joueurCreateDto){
-		JoueurDTO updatedJoueur =  joueurService.updateJoueur(joueurId,joueurCreateDto);		 
-		return new ResponseEntity<>(updatedJoueur,HttpStatus.OK);
+	public ResponseEntity<JoueurDTO> updateJoueur(@PathVariable("id") long joueurId,@RequestBody JoueurCreateDTO joueurCreateDto)
+	{
+		try {
+			JoueurDTO updatedJoueur =  joueurService.updateJoueur(joueurId,joueurCreateDto);		 
+			return new ResponseEntity<>(updatedJoueur,HttpStatus.OK);
+		}catch(JoueurNotFoundException e) {
+			 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}catch (Exception e) {
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+		
 		
 	}
 	
@@ -70,17 +85,26 @@ private final IJoueurService joueurService;
 	public ResponseEntity<JoueurDTO> assignedTitreToJoueur (
 			@PathVariable("joueurId")long joueurId, 
 			@PathVariable("titreId")int titreId){
-		JoueurDTO assignedTitreToJoueur = joueurService.assignedTitreToJoueur(joueurId,titreId);
-		return new ResponseEntity<>(assignedTitreToJoueur,HttpStatus.OK);
+		try {
+			JoueurDTO assignedTitreToJoueur = joueurService.assignedTitreToJoueur(joueurId,titreId);
+			return new ResponseEntity<>(assignedTitreToJoueur,HttpStatus.OK);
+		}catch(JoueurNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	
 	}
 	
 	@DeleteMapping("{id}")
-	public ResponseEntity<Map<String,Boolean>> deleteJoueur(@PathVariable("id") long joueurId){		
-		return new ResponseEntity<>(joueurService.deleteJoueur(joueurId), HttpStatus.OK);
+	public ResponseEntity<Map<String,Boolean>> deleteJoueur(@PathVariable("id") long joueurId){	
+		try {return new ResponseEntity<>(joueurService.deleteJoueur(joueurId), HttpStatus.OK);}
+		catch(JoueurNotFoundException e ) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
 	}
-	
-	
-	
+		
 	@GetMapping("/search")
 	public PaginationResponse getJoueurByMotClef(
 			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,

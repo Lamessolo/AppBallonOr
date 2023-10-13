@@ -37,19 +37,25 @@ public class TitreController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<TitreDTO> getTitreById(@PathVariable("id") Integer titreId){
-		if(titreId < 0){
-			throw new TitreNotFoundException("Titre id not found " + titreId);
-		}
-		TitreDTO titre = titreService.findTitreById(titreId);
-		return new ResponseEntity<>(titre, HttpStatus.OK);
+		try {
+			TitreDTO titre = titreService.findTitreById(titreId);
+			return new ResponseEntity<>(titre, HttpStatus.OK);
+		}catch(TitreNotFoundException e) {
+		 return new ResponseEntity<>(HttpStatus.NOT_FOUND);}
+		
 		}
 	
 	@PostMapping("/add")
-	public ResponseEntity<TitreDTO> createTitre(@RequestBody TitreCreateDTO titreCreateDto){		
-		TitreDTO newTitre = titreService.createTitre(titreCreateDto);
-		return new ResponseEntity<>(newTitre, HttpStatus.CREATED);	
+	public ResponseEntity<TitreDTO> createTitre(@RequestBody TitreCreateDTO titreCreateDto){
+		try {
+			TitreDTO newTitre = titreService.createTitre(titreCreateDto);
+			return new ResponseEntity<>(newTitre, HttpStatus.CREATED);	
+		}catch(Exception e) {
+			 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);}
+		}
+		
 	}
-}
+
 
 
 

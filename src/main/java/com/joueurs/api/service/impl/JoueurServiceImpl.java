@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -19,7 +19,7 @@ import com.joueurs.api.entity.Club;
 import com.joueurs.api.entity.Joueur;
 import com.joueurs.api.entity.Poste;
 import com.joueurs.api.entity.Selection;
-
+import com.joueurs.api.entity.Titre;
 import com.joueurs.api.repository.ClubRepository;
 import com.joueurs.api.repository.JoueurRepository;
 import com.joueurs.api.repository.PosteRepository;
@@ -127,14 +127,14 @@ public class JoueurServiceImpl implements IJoueurService {
 		
 			// Recuperer l'entite Joueur by Id
 			Optional<Joueur> joueurEntiteOptional = joueurRepository.findById(joueurId);
-					//.orElseThrow(()-> new ResourceNotFoundException("Joueur", "id", joueurId));
+					
 			
 			Optional<Poste> posteJoueurOptional = posteRepository.findById(joueurCreateDto.getPoste());
-					//.orElseThrow(()-> new ResourceNotFoundException("Poste", "id", joueurCreateDto.getPoste()));
+					
 			Optional<Selection> selectionJoueurOptional = selectionRepository.findById(joueurCreateDto.getSelection());
-					//.orElseThrow(()-> new ResourceNotFoundException("Selection","id",joueurCreateDto.getSelection()));
+					
 			Optional<Club> clubJoueurOptional = clubRepository.findById(joueurCreateDto.getClub());
-					//.orElseThrow(()-> new ResourceNotFoundException("Club","id",joueurCreateDto.getClub()));
+					
 			
 					// Vérifiez si les objets Optionals contiennent des valeurs avant d'extraire les entités
 					if (joueurEntiteOptional.isPresent()&&posteJoueurOptional.isPresent() 
@@ -319,6 +319,24 @@ public class JoueurServiceImpl implements IJoueurService {
 		pageJoueursResponse.setTotalElements(listeDesJoueursByParametres.getTotalElements());
 		pageJoueursResponse.setTotalPages(listeDesJoueursByParametres.getTotalPages());	
 		return pageJoueursResponse;
+	}
+
+	@Override
+	public JoueurDTO assignedTitreToJoueur(long joueurId, int titreId) {
+		Set<Titre> listeTitre = null;
+		Optional<Joueur> joueurOptional = joueurRepository.findById(joueurId);
+		Optional<Titre> titreToAdd = titreRepository.findById(titreId);
+		
+		if(joueurOptional.isPresent()&& titreToAdd.isPresent()) {
+		listeTitre = joueurOptional.get().getAssignedTitres();
+		listeTitre.add(titreToAdd.get());
+		joueurOptional.get().setAssignedTitres(listeTitre);
+		joueurRepository.save(joueurOptional.get());
+		return mapEntityToDTO(joueurOptional.get());
+		}
+		else {throw new IllegalArgumentException("Un indentitifant est incorrect titre ou Joueur");}
+		
+		
 	}
 		
 	}

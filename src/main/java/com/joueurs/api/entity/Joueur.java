@@ -13,6 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -70,6 +72,13 @@ public class Joueur implements Serializable {
 	@OneToOne 
 	@JoinColumn(name="club_id", referencedColumnName="id")
 	private Club club;
+
+	@ManyToMany
+	@JoinTable(name="joueur_titre",
+	 joinColumns = @JoinColumn(name="joueur_id"),
+	 inverseJoinColumns = @JoinColumn (name="titre_id"))
+	private Set<Titre> assignedTitres = new HashSet<>();
+	
 	
 
 	public int getAge() {

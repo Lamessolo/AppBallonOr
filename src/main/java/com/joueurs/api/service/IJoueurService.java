@@ -46,6 +46,8 @@ public interface IJoueurService  {
 			int pageNo, int pageSize, 
 			String sortBy);
 
+	JoueurDTO assignedTitreToJoueur(long joueurId, int titreId);
+
 	
 	
 

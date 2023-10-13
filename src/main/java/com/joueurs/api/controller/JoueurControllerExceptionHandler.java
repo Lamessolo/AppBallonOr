@@ -2,13 +2,13 @@ package com.joueurs.api.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.joueurs.api.exception.JoueurErrorResponse;
 import com.joueurs.api.exception.JoueurNotFoundException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class JoueurControllerExceptionHandler {
 
 	// Add an exception handler using @ExceptionHandler
@@ -28,7 +28,7 @@ public class JoueurControllerExceptionHandler {
 		
 		
 		@ExceptionHandler
-		public ResponseEntity<JoueurErrorResponse> handlerException( Exception exc){
+		public ResponseEntity<JoueurErrorResponse> handlerException(Exception exc){
 			
 			// create a JoueurErrorResponse		
 			JoueurErrorResponse error = new JoueurErrorResponse();		

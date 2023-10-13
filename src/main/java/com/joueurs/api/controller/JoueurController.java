@@ -44,7 +44,6 @@ private final IJoueurService joueurService;
 	}
 
 		
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<JoueurDTO> getJoueurById(@PathVariable("id") long joueurId){
 		if(joueurId < 0){
@@ -53,7 +52,6 @@ private final IJoueurService joueurService;
 		JoueurDTO joueur = joueurService.findJoueurById(joueurId);
 		return new ResponseEntity<>(joueur, HttpStatus.OK);
 		}
-	
 	
 	@PostMapping("/add")
 	public ResponseEntity<JoueurDTO> createJoueur(@RequestBody JoueurCreateDTO joueurCreateDto){		
@@ -67,6 +65,14 @@ private final IJoueurService joueurService;
 		return new ResponseEntity<>(updatedJoueur,HttpStatus.OK);
 		
 	}
+	
+	/*@PutMapping("{joueurId}/titre/{titreId}")
+	public ResponseEntity<JoueurDTO> assignedTitreToJoueur (
+			@PathVariable("joueurId") int joueurId, 
+			@PathVariable("titreId")int titreId){
+		JoueurDTO assignedTitreToJoueur = joueurService.assignedTitreToJoueur(joueurId,titreId);
+		return new ResponseEntity<>(assignedTitreToJoueur,HttpStatus.OK);
+	}*/
 	
 	@DeleteMapping("{id}")
 	public ResponseEntity<Map<String,Boolean>> deleteJoueur(@PathVariable("id") long joueurId){		

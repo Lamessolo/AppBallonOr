@@ -41,21 +41,11 @@ public class SelectionServiceImpl implements ISelectionService{
 	}
 		
 	@Override
-	public PaginationSelectionResponse getAllSelection(int pageNo, int pageSize, String sortBy) {
-		
-		PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
-		Page<Selection> listeDesSelections = selectionRepository.findAll(pageable);
-		List<Selection> selections = listeDesSelections.getContent();
-		List<SelectionDTO> content = selections.stream().map(this::mapEntityToDTO).collect(Collectors.toList());
-		
-		PaginationSelectionResponse pageSelectionsResponse = new PaginationSelectionResponse();
-		pageSelectionsResponse.setContent(content);
-		pageSelectionsResponse.setPageNo(listeDesSelections.getNumber());
-		pageSelectionsResponse.setPageSize(listeDesSelections.getSize());
-		pageSelectionsResponse.setTotalElements(listeDesSelections.getTotalElements());
-		pageSelectionsResponse.setTotalPages(listeDesSelections.getTotalPages());
-		pageSelectionsResponse.setLast(listeDesSelections.isLast());
-		return pageSelectionsResponse;	
+	public List<SelectionDTO> getAllSelection() {
+				
+		List<Selection> listeDesSelections = selectionRepository.findAll();	
+		List<SelectionDTO> content = listeDesSelections.stream().map(this::mapEntityToDTO).collect(Collectors.toList());		
+		return content;	
 	}
 	
 	public SelectionDTO findSelectionById(long selectionId) {

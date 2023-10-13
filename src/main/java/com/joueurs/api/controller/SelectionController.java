@@ -1,5 +1,6 @@
 package com.joueurs.api.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -33,12 +34,9 @@ public class SelectionController {
 	private final ISelectionService selectionService;
 	
 	@GetMapping("/all")
-	public PaginationSelectionResponse getAllSelections(
-			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
-			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
-			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy){
+	public List<SelectionDTO> getAllSelections(){
 		 
-		return selectionService.getAllSelection(pageNo,pageSize,sortBy);
+		return selectionService.getAllSelection();
 	}
 	
 	@GetMapping("/{id}")

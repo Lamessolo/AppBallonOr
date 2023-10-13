@@ -2,7 +2,10 @@ package com.joueurs.api.dto;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
+
+import com.joueurs.api.entity.Titre;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +27,11 @@ public class JoueurDTO implements Serializable {
 	
 	private Date dateNaissance;
 	
+	private String surnom;
+	
+	private String description;
+	
+	
 	private PosteDTO poste;
 	
 	private String imageUrl;
@@ -37,6 +45,8 @@ public class JoueurDTO implements Serializable {
 	private String anneeRecompense;
 	
 	private ClubDTO club;
+	
+	private List<Titre> titres;
 	
 	private int age;
 	

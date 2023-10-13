@@ -37,21 +37,11 @@ public class ClubServiceImpl implements IClubService {
 	
 
 	@Override
-	public  PaginationClubResponse getAllClub(int pageNo, int pageSize, String sortBy) {
+	public  List<ClubDTO> getAllClub(){		
 		
-		PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
-		Page<Club> listeDesClubs = clubRepository.findAll(pageable);
-		List<Club> clubs = listeDesClubs.getContent();
-		List<ClubDTO> content = clubs.stream().map(this::mapEntityToDTO).collect(Collectors.toList());
-		
-		PaginationClubResponse pageClubsResponse = new PaginationClubResponse();
-		pageClubsResponse.setContent(content);
-		pageClubsResponse.setPageNo(listeDesClubs.getNumber());
-		pageClubsResponse.setPageSize(listeDesClubs.getSize());
-		pageClubsResponse.setTotalElements(listeDesClubs.getTotalElements());
-		pageClubsResponse.setTotalPages(listeDesClubs.getTotalPages());
-		pageClubsResponse.setLast(listeDesClubs.isLast());
-		return pageClubsResponse;	
+		List<Club> listeDesClubs = clubRepository.findAll();
+		List<ClubDTO> content = listeDesClubs.stream().map(this::mapEntityToDTO).collect(Collectors.toList());			
+		return content;	
 		
 	}
 

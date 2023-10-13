@@ -1,5 +1,6 @@
 package com.joueurs.api.exception;
 
+
 public class JoueurNotFoundException  extends RuntimeException{
 
 	public JoueurNotFoundException(String message, Throwable cause) {

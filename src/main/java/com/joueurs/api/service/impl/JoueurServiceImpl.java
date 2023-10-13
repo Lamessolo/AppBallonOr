@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -18,10 +19,12 @@ import com.joueurs.api.entity.Club;
 import com.joueurs.api.entity.Joueur;
 import com.joueurs.api.entity.Poste;
 import com.joueurs.api.entity.Selection;
+
 import com.joueurs.api.repository.ClubRepository;
 import com.joueurs.api.repository.JoueurRepository;
 import com.joueurs.api.repository.PosteRepository;
 import com.joueurs.api.repository.SelectionRepository;
+import com.joueurs.api.repository.TitreRepository;
 import com.joueurs.api.service.IJoueurService;
 import com.joueurs.api.utils.PaginationResponse;
 
@@ -34,6 +37,7 @@ public class JoueurServiceImpl implements IJoueurService {
 	private final JoueurRepository joueurRepository;
 	private final PosteRepository posteRepository ;
 	private final SelectionRepository selectionRepository;
+	private final TitreRepository  titreRepository;
 	private final ClubRepository clubRepository;
 	
 	private final ModelMapper mapper;
@@ -146,6 +150,9 @@ public class JoueurServiceImpl implements IJoueurService {
 							joueurNew.setPrenom(joueurCreateDto.getPrenom());
 							joueurNew.setDateNaissance(joueurCreateDto.getDateNaissance());
 							joueurNew.setClassement(joueurCreateDto.getClassement());
+							joueurNew.setImageUrl(joueurCreateDto.getImageUrl());
+							joueurNew.setSurnom(joueurCreateDto.getSurnom());
+							joueurNew.setDescription(joueurCreateDto.getDescription());
 							joueurNew.setNbrPointObtenu(joueurCreateDto.getNbrPointObtenu());
 							joueurNew.setAnneeRecompense(joueurCreateDto.getAnneeRecompense());
 							joueurNew.setClub(clubNew);
@@ -313,7 +320,6 @@ public class JoueurServiceImpl implements IJoueurService {
 		pageJoueursResponse.setTotalPages(listeDesJoueursByParametres.getTotalPages());	
 		return pageJoueursResponse;
 	}
-	
-			
+		
 	}
 

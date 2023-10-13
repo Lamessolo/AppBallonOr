@@ -11,5 +11,7 @@ public class ConstanteApp {
 	
 	public static final String DEFAULT_SORT_BY ="name";
 	
+	public static final String DEFAULT_SORT_BY_TITLE ="title";
+	
 	public static final String DEFAULT_SORT_DIRECTION="asc";
 }

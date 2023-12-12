@@ -15,36 +15,39 @@ import org.springframework.stereotype.Service;
 
 import com.joueurs.api.dto.SelectionCreateDTO;
 import com.joueurs.api.dto.SelectionDTO;
-
 import com.joueurs.api.entity.Selection;
+import com.joueurs.api.exception.SelectionNotFoundException;
 import com.joueurs.api.repository.SelectionRepository;
 import com.joueurs.api.service.ISelectionService;
 import com.joueurs.api.utils.PaginationSelectionResponse;
 
-import lombok.RequiredArgsConstructor;
-
 
 @Service
-@RequiredArgsConstructor
 public class SelectionServiceImpl implements ISelectionService{
 
-	private final SelectionRepository selectionRepository;
-	private final ModelMapper mapper;
+	private SelectionRepository selectionRepository;
+	private ModelMapper mapper;
 	
-     private SelectionDTO mapEntityToDTO(Selection selection) {
-		 		
-		return mapper.map(selection, SelectionDTO.class);			
+	public SelectionServiceImpl(SelectionRepository selectionRepository,ModelMapper mapper) {	
+		this.selectionRepository = selectionRepository;
+		this.mapper = mapper;
 	}
-	 public  Selection mapDtoToEntity(SelectionCreateDTO SelectionCreateDto) {
+
+	private SelectionDTO mapEntityToDto(Selection selection) 
+	{		
+		return mapper.map(selection, SelectionDTO.class);
+	}
 	
-		return mapper.map(SelectionCreateDto, Selection.class);			
+	private Selection mapDtoToEntity(SelectionDTO selectionDto) 
+	{		
+		return mapper.map(selectionDto, Selection.class);
 	}
-		
+
 	@Override
 	public List<SelectionDTO> getAllSelection() {
 				
 		List<Selection> listeDesSelections = selectionRepository.findAll();	
-		List<SelectionDTO> content = listeDesSelections.stream().map(this::mapEntityToDTO).collect(Collectors.toList());		
+		List<SelectionDTO> content = listeDesSelections.stream().map(this::mapEntityToDto).collect(Collectors.toList());		
 		return content;	
 	}
 	
@@ -53,29 +56,30 @@ public class SelectionServiceImpl implements ISelectionService{
 		Optional<Selection> entitySelectionOptional = selectionRepository.findById(selectionId);
 		if (entitySelectionOptional.isPresent())
 		{  Selection selection = entitySelectionOptional.get();
-		return mapEntityToDTO(selection);
+		return mapEntityToDto(selection);
 		}else {
-			throw new IllegalArgumentException("L'id de la selection n'est pas bonne");
+			throw new IllegalArgumentException("L'id de la selection est incorrect");
 		}	
 				
 	}
 	@Override
 	public Map<String, Boolean> deleteSelection(long selectionId) {
-		Optional<Selection> entitySelectionOptional = selectionRepository.findById(selectionId);
-		Selection entitySelection = entitySelectionOptional.get();	
-			selectionRepository.delete(entitySelection);
+		Selection selection = selectionRepository
+				.findById(selectionId)
+				.orElseThrow(() -> new SelectionNotFoundException("Selection", "id", selectionId));
+	
+			selectionRepository.delete(selection);
 			Map<String, Boolean> response = new HashMap<>();
 			response.put("deleted", Boolean.TRUE);
 			return response;
 	}
 	
 	@Override
-	public SelectionDTO createSelection(SelectionCreateDTO selectionCreateDto) {
-		   	
+	public SelectionDTO createSelection(SelectionCreateDTO selectionCreateDto) {	   	
 		 // Validation des données d'entrée
 	    if (selectionCreateDto == null || selectionCreateDto.getName() == null || selectionCreateDto.getConfederation() == null)
 	    {
-	        throw new IllegalArgumentException("Données d'entrée invalides.");
+	      throw new IllegalArgumentException("Données d'entrée invalides.");
 	    }
 	    try {
 	        // Création de la nouvelle entité
@@ -87,7 +91,7 @@ public class SelectionServiceImpl implements ISelectionService{
 	        createdNewSelection = selectionRepository.save(createdNewSelection);
 	        
 	        // Conversion en DTO et retour
-	        return mapEntityToDTO(createdNewSelection);
+	        return mapEntityToDto(createdNewSelection);
 	    } catch (DataIntegrityViolationException ex) {
 	        // Gestion des erreurs de contrainte (par exemple, clé primaire en double)
 	        throw new IllegalArgumentException("Une erreur de contrainte s'est produite lors de la création de la sélection.");
@@ -103,7 +107,7 @@ public class SelectionServiceImpl implements ISelectionService{
 	
 		Page<Selection> listeDesSelectionByConfederation = selectionRepository.findByConfederation(confederation,pageable);
 		List<Selection> selectionsByConfederarion = listeDesSelectionByConfederation.getContent();
-		List<SelectionDTO> SelectionByConfederation = selectionsByConfederarion.stream().map(this::mapEntityToDTO).collect(Collectors.toList());
+		List<SelectionDTO> SelectionByConfederation = selectionsByConfederarion.stream().map(this::mapEntityToDto).collect(Collectors.toList());
 		
 		PaginationSelectionResponse pageSelectionsResponse = new PaginationSelectionResponse();
 		pageSelectionsResponse.setContent(SelectionByConfederation);
@@ -114,6 +118,17 @@ public class SelectionServiceImpl implements ISelectionService{
 		pageSelectionsResponse.setLast(listeDesSelectionByConfederation.isLast());
 		return pageSelectionsResponse;
 			
+	}
+	
+	@Override
+	public SelectionDTO updateSelection(long selectionId, SelectionCreateDTO selectionCreateDto) {
+		 Selection selection = selectionRepository
+		    		.findById(selectionId)
+		    		.orElseThrow(()-> new SelectionNotFoundException("Selection", "id", selectionId)); 
+		 selection.setConfederation(selectionCreateDto.getConfederation());
+		 selection.setName(selectionCreateDto.getName());
+		 selectionRepository.save(selection);
+		 return mapEntityToDto(selection);	
 	}
 
 }

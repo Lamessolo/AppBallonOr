@@ -2,8 +2,6 @@ package com.joueurs.api.service;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
-
 import com.joueurs.api.dto.JoueurCreateDTO;
 import com.joueurs.api.dto.JoueurDTO;
 import com.joueurs.api.utils.PaginationResponse;
@@ -14,13 +12,15 @@ public interface IJoueurService  {
 	
 	PaginationResponse getAllJoueur(int pageNo,int pageSize,String sortBy);
 	
+	PaginationResponse getVainqueurBallondOr(int pageNo,int pageSize,String sortBy);
+	
 	PaginationResponse findByPosteId(int pageNo,int pageSize,String sortBy,long byPosteId);
 	
 	PaginationResponse findByAnnee(int pageNo, int pageSize, String sortBy, String byAnnee);
 	
 	PaginationResponse findByClassementPosition(int pageNo, int pageSize, String sortBy, int byClassementPosition);
 	
-	PaginationResponse findByClubId(int pageNo, int pageSize, String sortBy, int byClubId);
+	PaginationResponse findByClubId(int pageNo, int pageSize, String sortBy, long byClubId);
 	
 	PaginationResponse findJoueurByMotClef(int pageNo, int pageSize, String sortBy, String byMotClef);
 	
@@ -35,18 +35,19 @@ public interface IJoueurService  {
 	List<JoueurDTO> searchJoueurByAnnee(String annee);
 
 	PaginationResponse findJoueurByParametres(
-		int posteId,
+		long posteId,
 			int classement,
 			String anneeRecompense,
 			int pageNo, int pageSize, 
 			String sortBy);
 
-	PaginationResponse findJoueurByPosteAndClassementParametres(int posteId,
+	
+	PaginationResponse findJoueurByPosteAndClassementParametres(long posteId,
 			int classement,
 			int pageNo, int pageSize, 
 			String sortBy);
 
-	JoueurDTO assignedTitreToJoueur(long joueurId, int titreId);
+	JoueurDTO assignedTitreToJoueur(long joueurId, long titreId);
 
 	
 	

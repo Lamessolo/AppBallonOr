@@ -12,5 +12,5 @@ public interface ITitreService {
 	
 	List<TitreDTO> getAllTitre();
 	
-	TitreDTO findTitreById(Integer titreId);
+	TitreDTO findTitreById(long titreId);
 }

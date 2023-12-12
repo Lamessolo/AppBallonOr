@@ -21,7 +21,7 @@ public interface JoueurRepository extends JpaRepository<Joueur,Long> {
 	
 	Page<Joueur> findByAnneeRecompense(@Param("byanneeRecompense")String byanneeRecompense, PageRequest pageable);
 	
-	Page<Joueur> findByClassement(@Param("classement")int classement,PageRequest pageable);
+	Page<Joueur> findByClassement(@Param("classement")long classement,PageRequest pageable);
 	
 	@Query("SELECT j FROM Joueur j  WHERE " 
 			+ "j.name LIKE CONCAT ('%',:name,'%')"
@@ -43,12 +43,14 @@ public interface JoueurRepository extends JpaRepository<Joueur,Long> {
 			List<Joueur> searchJoueurByAnnee (@Param("annee") String annee);
 
 	@Query("SELECT j FROM Joueur j WHERE (:posteId = 0 OR j.poste.id = :posteId) AND (:anneeRecompense IS NULL OR j.anneeRecompense = :anneeRecompense) AND (:classement = 0  OR j.classement = :classement)")
-	Page<Joueur> findJoueurByAnneeRecompenseAndPosteIdAndClassement(@Param("posteId")int posteId,@Param("classement")int classement,@Param("anneeRecompense")String anneeRecompense, PageRequest pageable);
+	Page<Joueur> findJoueurByAnneeRecompenseAndPosteIdAndClassement(@Param("posteId")long posteId,@Param("classement")int classement,@Param("anneeRecompense")String anneeRecompense, PageRequest pageable);
 	   
 	@Query("SELECT j FROM Joueur j WHERE (:posteId = 0 OR j.poste.id = :posteId) AND (:classement = 0 OR j.classement = :classement)")
-	Page<Joueur> findJoueurByPosteIdAndClassement(@Param("posteId")int posteId,@Param("classement")Integer classement, PageRequest pageable);
+	Page<Joueur> findJoueurByPosteIdAndClassement(@Param("posteId")long posteId,@Param("classement")int classement, PageRequest pageable);
 
-			
+	
+	@Query("SELECT j FROM Joueur j WHERE j.classement = 1")
+	Page<Joueur> findVainqueurBallondOr(PageRequest pageable);
 
 			
 			

@@ -3,20 +3,27 @@ package com.joueurs.api.exception;
 
 public class JoueurNotFoundException  extends RuntimeException{
 
-	public JoueurNotFoundException(String message, Throwable cause) {
-		super(message, cause);
+	private String postName;
+	private String fieldName;
+	private long fieldValue;
 	
+	public JoueurNotFoundException(String postName, String fieldName, long fieldValue) {
+		super(String.format("%s not found with %s : '%s'",postName, fieldName,fieldValue));
+		this.postName = postName;
+		this.fieldName = fieldName;
+		this.fieldValue = fieldValue;
 	}
 
-	public JoueurNotFoundException(String message) {
-		super(message);
-	
+	public String getPostName() {
+		return postName;
 	}
 
-	public JoueurNotFoundException(Throwable cause) {
-		super(cause);
-	
+	public String getFieldName() {
+		return fieldName;
 	}
 
-	
+	public long getFieldValue() {
+		return fieldValue;
+	}
+
 }

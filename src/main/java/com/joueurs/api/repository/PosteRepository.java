@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.joueurs.api.entity.Poste;
 
 @Repository
-public interface PosteRepository extends JpaRepository<Poste, Long> {
+public interface PosteRepository extends JpaRepository<Poste,Long> {
 
 }

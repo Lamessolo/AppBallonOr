@@ -1,12 +1,11 @@
 package com.joueurs.api.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.joueurs.api.dto.ClubCreateDTO;
 import com.joueurs.api.dto.ClubDTO;
-import com.joueurs.api.entity.Club;
 import com.joueurs.api.utils.PaginationClubResponse;
-
 
 
 public interface IClubService  {
@@ -20,4 +19,6 @@ public interface IClubService  {
 	ClubDTO updateClub(long clubId, ClubCreateDTO clubCreateDto);
 
 	ClubDTO createClub(ClubCreateDTO clubCreateDto);
+
+	Map<String,Boolean> deleteClub(long clubId);
 }

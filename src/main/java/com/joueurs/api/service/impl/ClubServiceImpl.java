@@ -1,8 +1,8 @@
 package com.joueurs.api.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -11,49 +11,50 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.joueurs.api.dto.ClubCreateDTO;
 import com.joueurs.api.dto.ClubDTO;
 import com.joueurs.api.entity.Club;
+import com.joueurs.api.exception.ClubNotFoundException;
 import com.joueurs.api.repository.ClubRepository;
 import com.joueurs.api.service.IClubService;
 import com.joueurs.api.utils.PaginationClubResponse;
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class ClubServiceImpl implements IClubService {
 
-	private final ClubRepository clubRepository;
-	private final ModelMapper mapper;
-	
-     private ClubDTO mapEntityToDTO(Club club) {
-		
-		return mapper.map(club, ClubDTO.class);			
-	}
-	
-	public  Club mapDtoToEntity(ClubCreateDTO clubCreateDto) {
+	private  ClubRepository clubRepository;
+	private ModelMapper mapper;
+	    
+	   public ClubServiceImpl (ClubRepository clubRepository,ModelMapper mapper) {
+		   this.clubRepository = clubRepository;
+		   this.mapper = mapper;
+	   }
 	   
-		return mapper.map(clubCreateDto, Club.class);		
-	}
-	
+	   private  ClubDTO mapEntityToDto(Club club) 
+		{		
+			return mapper.map(club, ClubDTO.class);
+		}
+		
+		private Club mapDtoToEntity(ClubCreateDTO clubCreateDto) 
+		{		
+			return mapper.map(clubCreateDto, Club.class);
+		}	
 
 	@Override
 	public  List<ClubDTO> getAllClub(){		
 		
 		List<Club> listeDesClubs = clubRepository.findAll();			
 		return listeDesClubs.stream()
-							.map(this::mapEntityToDTO)
-							.collect(Collectors.toList());	
-		
+							.map(this::mapEntityToDto)
+							.collect(Collectors.toList());		
 	}
 
 	@Override
-	public ClubDTO findClubById(long clubId) {
-		
-		Optional<Club> entityClubOptional = clubRepository.findById(clubId);
-		Club club = entityClubOptional.orElseThrow(() -> new NoSuchElementException("Club not found"));		
-		return mapEntityToDTO(club);
+	public ClubDTO findClubById(long clubId) {	
+		Club club= clubRepository
+				.findById(clubId)
+				.orElseThrow(() -> new ClubNotFoundException("Club", "id", clubId));	
+		return mapEntityToDto(club);
 		
 	}
 
@@ -68,7 +69,7 @@ public class ClubServiceImpl implements IClubService {
 		Page<Club> listeDesClubByCountry = clubRepository.findByPays(pays,pageable);
 		List<ClubDTO> Clubs = listeDesClubByCountry.getContent()
 				.stream()
-				.map(this::mapEntityToDTO)
+				.map(this::mapEntityToDto)
 				.collect(Collectors.toList());
 		
 		PaginationClubResponse response = new PaginationClubResponse();
@@ -79,7 +80,6 @@ public class ClubServiceImpl implements IClubService {
 		response.setTotalPages(listeDesClubByCountry.getTotalPages());
 		response.setLast(listeDesClubByCountry.isLast());
 		return response;	
-	
 	}
 
 	@Override
@@ -87,16 +87,15 @@ public class ClubServiceImpl implements IClubService {
 	public ClubDTO updateClub(long clubId, ClubCreateDTO clubCreateDto) {
 		if(clubId == 0 || clubCreateDto == null) throw new IllegalArgumentException("Invalid parameters (clubId, clubDto)");
 		
-		
-		Optional<Club> clubEntiteOptional = clubRepository.findById(clubId);
-		Club club = clubEntiteOptional.orElseThrow(() -> new NoSuchElementException("Club not found"));	
-		  			   
+		Club club = clubRepository
+				.findById(clubId)
+				.orElseThrow(() -> new ClubNotFoundException("Club", "id", clubId));
+   
 		club.setName(clubCreateDto.getName());
 		club.setPays(clubCreateDto.getPays());	
 					    
-		clubRepository.save(club);
-										
-		return mapEntityToDTO(club);
+		clubRepository.save(club);									
+		return mapEntityToDto(club);
 														
 	}
 
@@ -109,7 +108,18 @@ public class ClubServiceImpl implements IClubService {
 	        
 	        clubRepository.save(newClub);
 	        
-		return mapEntityToDTO(newClub);
+		return mapEntityToDto(newClub);
+	}
+
+	@Override
+	public Map<String, Boolean> deleteClub(long clubId) {
+		Club club = clubRepository
+				.findById(clubId)
+				.orElseThrow(()-> new ClubNotFoundException("Club", "id", clubId));
+		clubRepository.delete(club);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("deleted", Boolean.TRUE);
+		return response;
 	}
 
 }

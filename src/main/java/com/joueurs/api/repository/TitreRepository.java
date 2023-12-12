@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.joueurs.api.entity.Titre;
 
 @Repository
-public interface TitreRepository extends JpaRepository<Titre, Integer> {
+public interface TitreRepository extends JpaRepository<Titre, Long> {
 
 	
 }

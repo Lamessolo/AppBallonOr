@@ -7,37 +7,37 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+
 import com.joueurs.api.dto.TitreCreateDTO;
 import com.joueurs.api.dto.TitreDTO;
+
 import com.joueurs.api.entity.Titre;
+
 import com.joueurs.api.repository.TitreRepository;
 import com.joueurs.api.service.ITitreService;
 
-import lombok.RequiredArgsConstructor;
-
-
 @Service
-@RequiredArgsConstructor
 public class TitreServiceImpl implements ITitreService {
+	private TitreRepository titreRepository;
+	private ModelMapper mapper;
+	
+	public TitreServiceImpl(TitreRepository titreRepository,ModelMapper mapper) {	
+		this.titreRepository = titreRepository;
+		this.mapper = mapper;
+	}
 
-	
-	private final TitreRepository titreRepository;
-	private final ModelMapper mapper;
-	
-    private TitreDTO mapEntityToDTO(Titre titre) {
-		
-		return mapper.map(titre, TitreDTO.class);			
+	private TitreDTO mapEntityToDto(Titre titre) 
+	{		
+		return mapper.map(titre, TitreDTO.class);
 	}
 	
-	public Titre mapDtoToEntity(TitreCreateDTO titreCreateDto) {
-	   
-		return mapper.map(titreCreateDto, Titre.class);		
+	private Titre mapDtoToEntity(TitreDTO titreDto) 
+	{		
+		return mapper.map(titreDto, Titre.class);
 	}
-	
 	
 	@Override
 	public TitreDTO createTitre(TitreCreateDTO titreCreateDto) {
-		
 		Titre NewTitre = new Titre();
 		NewTitre.setAnneeTitre(titreCreateDto.getAnneeTitre());
 		NewTitre.setCompetition(titreCreateDto.getCompetition());
@@ -47,7 +47,7 @@ public class TitreServiceImpl implements ITitreService {
 		NewTitre.setType(titreCreateDto.getType());
 		titreRepository.save(NewTitre);
 		
-		return  mapEntityToDTO(NewTitre);
+		return  mapEntityToDto(NewTitre);
 	}
 
 	@Override
@@ -57,18 +57,18 @@ public class TitreServiceImpl implements ITitreService {
 		
 		// Je veux une list de TitreDTO
 		List<TitreDTO> contentTitreDTO = titresList.stream()
-												   .map(this::mapEntityToDTO)
+												   .map(this::mapEntityToDto)
 												   .collect(Collectors.toList());
 		return contentTitreDTO;
 	}
 
 	@Override
-	public TitreDTO findTitreById(Integer titreId) {
+	public TitreDTO findTitreById(long titreId) {
 		
 		Optional<Titre> entityTitreOptional = titreRepository.findById(titreId);
 		if (entityTitreOptional.isPresent())
 		{  Titre titre = entityTitreOptional.get();
-		return mapEntityToDTO(titre);
+		return mapEntityToDto(titre);
 		}else {
 			throw new IllegalArgumentException("L'id du titre est incorrect");
 		}	

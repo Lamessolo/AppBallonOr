@@ -2180,3 +2180,7 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: C:/Users/messj/e
 	at org.h2.mvstore.FileStore.open(FileStore.java:128)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:452)
 	... 60 more
+2023-10-13 21:55:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBL_TITRE" non trouvée
+Table "TBL_TITRE" not found; SQL statement:
+SELECT * FROM TBL_titre [42102-214]

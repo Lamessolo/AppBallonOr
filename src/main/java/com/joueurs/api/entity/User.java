@@ -1,6 +1,5 @@
 package com.joueurs.api.entity;
 
-import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +17,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private int id;
 	
 	@Column(name="name")
 	private String name;

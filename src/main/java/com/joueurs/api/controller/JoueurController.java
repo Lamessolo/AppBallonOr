@@ -19,22 +19,27 @@ import org.springframework.web.bind.annotation.RestController;
 import com.joueurs.api.utils.ConstanteApp;
 import com.joueurs.api.dto.JoueurCreateDTO;
 import com.joueurs.api.dto.JoueurDTO;
-import com.joueurs.api.exception.JoueurNotFoundException;
+
 import com.joueurs.api.service.IJoueurService;
 import com.joueurs.api.utils.PaginationResponse;
 
-import lombok.RequiredArgsConstructor;
-
+import io.swagger.v3.oas.annotations.Operation;
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("api/joueur")
 @CrossOrigin
 public class JoueurController {
 
-private final IJoueurService joueurService;
+private  IJoueurService joueurService;
+
+
 	
-	
+	public JoueurController(IJoueurService joueurService) {
+	this.joueurService = joueurService;
+}
+
+
 	@GetMapping("/all")
+	@Operation(summary = "Get ALL Joueurs", description = "This endpoint retrieve all joueur")
 	public PaginationResponse getAllJoueurs(
 		@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
 		@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
@@ -42,68 +47,54 @@ private final IJoueurService joueurService;
 	 
 	return joueurService.getAllJoueur(pageNo,pageSize,sortBy);
 	}
-
+	
+	
+	@GetMapping("/vainqueurs")
+	@Operation(summary = "Get ALL Joueurs vainqueur du Ballon Or", description = "This endpoint retrieve all vainqueur")
+	public PaginationResponse getVainqueurBallondOr(
+		@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
+		@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
+		@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy){
+	 
+	return joueurService.getVainqueurBallondOr(pageNo,pageSize,sortBy);
+	}
 		
 	@GetMapping("/{id}")
-	public ResponseEntity<JoueurDTO> getJoueurById(@PathVariable("id") long joueurId){
-		try {
-			JoueurDTO joueur = joueurService.findJoueurById(joueurId);
-			return new ResponseEntity<>(joueur, HttpStatus.OK);
-		}catch(JoueurNotFoundException e) {
-			 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	@Operation(summary = "Get Joueur By Id", description = "This endpoint retrieve joueur by Id")
+	public ResponseEntity<JoueurDTO> getJoueurById(@PathVariable("id") int joueurId){
+		
+		return new ResponseEntity<>(joueurService.findJoueurById(joueurId), HttpStatus.OK);
 		}
 	
-		}
-	
-	@PostMapping("/add")
+	@PostMapping
+	@Operation(summary = "Create Joueur", description = "This endpoint create a Joueur") // Documentation Swagger
 	public ResponseEntity<JoueurDTO> createJoueur(@RequestBody JoueurCreateDTO joueurCreateDto){
-		try {
-			JoueurDTO newJoueur = joueurService.createJoueur(joueurCreateDto);
-			return new ResponseEntity<>(newJoueur, HttpStatus.CREATED);	
-		} catch(Exception e) {
-			
-			  return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);}
-	
+		return new ResponseEntity<>(joueurService.createJoueur(joueurCreateDto), HttpStatus.CREATED);	
 	}
 		
 	@PutMapping("{id}")
-	public ResponseEntity<JoueurDTO> updateJoueur(@PathVariable("id") long joueurId,@RequestBody JoueurCreateDTO joueurCreateDto)
-	{
-		try {
-			JoueurDTO updatedJoueur =  joueurService.updateJoueur(joueurId,joueurCreateDto);		 
-			return new ResponseEntity<>(updatedJoueur,HttpStatus.OK);
-		}catch(JoueurNotFoundException e) {
-			 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}catch (Exception e) {
-	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
-		
-		
+	@Operation(summary = "Update Joueur", description = "This endpoint update a joueur")
+	public ResponseEntity<JoueurDTO> updateJoueur(@PathVariable("id") int joueurId,@RequestBody JoueurCreateDTO joueurCreateDto)
+	{				 
+			return new ResponseEntity<>(joueurService.updateJoueur(joueurId,joueurCreateDto),HttpStatus.OK);		
 	}
 	
 	@PutMapping("{joueurId}/titre/{titreId}")
+	@Operation(summary = "Assigne titre to Joueur", description = "This endpoint assigne titre to joueurs")
 	public ResponseEntity<JoueurDTO> assignedTitreToJoueur (
-			@PathVariable("joueurId")long joueurId, 
-			@PathVariable("titreId")int titreId){
-		try {
-			JoueurDTO assignedTitreToJoueur = joueurService.assignedTitreToJoueur(joueurId,titreId);
-			return new ResponseEntity<>(assignedTitreToJoueur,HttpStatus.OK);
-		}catch(JoueurNotFoundException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}catch(Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	
+			@PathVariable("joueurId")int joueurId, 
+			@PathVariable("titreId")int titreId){ 
+
+   return new ResponseEntity<>(joueurService.assignedTitreToJoueur(joueurId,titreId),HttpStatus.OK);
+
 	}
 	
 	@DeleteMapping("{id}")
-	public ResponseEntity<Map<String,Boolean>> deleteJoueur(@PathVariable("id") long joueurId){	
-		try {return new ResponseEntity<>(joueurService.deleteJoueur(joueurId), HttpStatus.OK);}
-		catch(JoueurNotFoundException e ) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		
-	}
+	@Operation(summary = "Delete Joueur By Id", description = "This endpoint delete joueur by Id")
+	public ResponseEntity<Map<String,Boolean>> deleteJoueur(@PathVariable("id") int joueurId){	
+			return new ResponseEntity<>(joueurService.deleteJoueur(joueurId), HttpStatus.OK);
+	}	
+	
 		
 	@GetMapping("/search")
 	public PaginationResponse getJoueurByMotClef(

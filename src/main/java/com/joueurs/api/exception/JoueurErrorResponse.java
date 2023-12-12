@@ -6,7 +6,6 @@ public class JoueurErrorResponse {
 	
 	private String message;
 	
-	
 	private long timeStamp;
 	
 	

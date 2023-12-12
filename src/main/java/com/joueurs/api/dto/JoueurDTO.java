@@ -30,8 +30,7 @@ public class JoueurDTO implements Serializable {
 	private String surnom;
 	
 	private String description;
-	
-	
+		
 	private PosteDTO poste;
 	
 	private String imageUrl;

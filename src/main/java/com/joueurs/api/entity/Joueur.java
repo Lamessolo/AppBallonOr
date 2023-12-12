@@ -2,9 +2,7 @@ package com.joueurs.api.entity;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -15,7 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import com.joueurs.api.utils.JoueurHelpers;
@@ -32,7 +30,7 @@ public class Joueur implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
+	private int id;
 	
 	@Column(name="name")
 	private String name;
@@ -43,14 +41,16 @@ public class Joueur implements Serializable {
 	@Column(name="surnom")
 	private String surnom;
 	
-	@Column(name="description")
+	@Column(name="description", length = 1000)
 	private String description;
 	
 	@Column(name="date_naissance")
 	private Date dateNaissance;
 	
-	@OneToOne 
-	@JoinColumn(name="poste_id", referencedColumnName="id")
+	//@OneToOne 
+	//@JoinColumn(name="poste_id",referencedColumnName="id")
+	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 poste
+	@JoinColumn(name="poste_id", unique = false)
 	private Poste poste;
 	
 	@Column(name="nbr_point_obtenu")
@@ -62,15 +62,19 @@ public class Joueur implements Serializable {
 	@Column(name="image_url")
 	private String imageUrl;
 	
-	@OneToOne 
-	@JoinColumn(name="selection_id", referencedColumnName="id")
+	//@OneToOne 
+	//@JoinColumn(name="selection_id",referencedColumnName="id")
+	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 Selection
+	@JoinColumn(name="selection_id", unique = false)
 	private Selection selection;
 	
 	@Column(name="annee_Recompense")
 	private String anneeRecompense;
 	
-	@OneToOne 
-	@JoinColumn(name="club_id", referencedColumnName="id")
+	//@OneToOne 
+	//@JoinColumn(name="club_id", referencedColumnName="id")
+	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 Club
+	@JoinColumn(name="club_id", unique = false)
 	private Club club;
 
 	@ManyToMany

@@ -98,27 +98,7 @@ public class SelectionServiceImpl implements ISelectionService{
 	    }
 	    		
 	}
-	@Override
-	public PaginationSelectionResponse findSelectionByConfederation(String confederation, int pageNo, int pageSize,
-			String sortBy) {
-		
-	PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
-		
 	
-		Page<Selection> listeDesSelectionByConfederation = selectionRepository.findByConfederation(confederation,pageable);
-		List<Selection> selectionsByConfederarion = listeDesSelectionByConfederation.getContent();
-		List<SelectionDTO> SelectionByConfederation = selectionsByConfederarion.stream().map(this::mapEntityToDto).collect(Collectors.toList());
-		
-		PaginationSelectionResponse pageSelectionsResponse = new PaginationSelectionResponse();
-		pageSelectionsResponse.setContent(SelectionByConfederation);
-		pageSelectionsResponse.setPageNo(listeDesSelectionByConfederation.getNumber());
-		pageSelectionsResponse.setPageSize(listeDesSelectionByConfederation.getSize());
-		pageSelectionsResponse.setTotalElements(listeDesSelectionByConfederation.getTotalElements());
-		pageSelectionsResponse.setTotalPages(listeDesSelectionByConfederation.getTotalPages());
-		pageSelectionsResponse.setLast(listeDesSelectionByConfederation.isLast());
-		return pageSelectionsResponse;
-			
-	}
 	
 	@Override
 	public SelectionDTO updateSelection(long selectionId, SelectionCreateDTO selectionCreateDto) {

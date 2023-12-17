@@ -14,9 +14,13 @@ public interface IJoueurService  {
 	
 	PaginationResponse getVainqueurBallondOr(int pageNo,int pageSize,String sortBy);
 	
-	PaginationResponse findByPosteId(int pageNo,int pageSize,String sortBy,long byPosteId);
+	PaginationResponse findByPosteId(long byPosteId,int pageNo,int pageSize,String sortBy);
 	
-	PaginationResponse findByAnnee(int pageNo, int pageSize, String sortBy, String byAnnee);
+	PaginationResponse findByRate(long byRate,int pageNo,int pageSize,String sortBy);
+	
+	PaginationResponse findByConfederation(int pageNo,int pageSize,String sortBy,long byConfederation);
+	
+	PaginationResponse findByAnnee(String year,int pageNo, int pageSize, String sortBy);
 	
 	PaginationResponse findByClassementPosition(int pageNo, int pageSize, String sortBy, int byClassementPosition);
 	
@@ -30,7 +34,6 @@ public interface IJoueurService  {
 	
 	Map<String,Boolean> deleteJoueur(long joueurId);
 	
-	List<JoueurDTO> searchJoueurByPoste(long posteId);
 
 	List<JoueurDTO> searchJoueurByAnnee(String annee);
 

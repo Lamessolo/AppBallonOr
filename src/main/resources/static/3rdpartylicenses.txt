@@ -264,6 +264,9 @@ SOFTWARE.
 
 
 
+ngx-star-rating
+MIT
+
 ngx-toastr
 MIT
 The MIT License (MIT)

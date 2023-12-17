@@ -56,6 +56,10 @@ public class Joueur implements Serializable {
 	@Column(name="nbr_point_obtenu")
 	private int nbrPointObtenu;
 	
+	@Column(name="rate", nullable=false, columnDefinition = "int default 1")
+	private int rate;
+	
+	
 	@Column(name="classement")
 	private int classement;
 	
@@ -67,6 +71,10 @@ public class Joueur implements Serializable {
 	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 Selection
 	@JoinColumn(name="selection_id", unique = false)
 	private Selection selection;
+	
+	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 Confederation
+	@JoinColumn(name="confederation_id", unique = false, columnDefinition = "int default 1")
+	private Confederation confederation;
 	
 	@Column(name="annee_Recompense")
 	private String anneeRecompense;
@@ -84,7 +92,6 @@ public class Joueur implements Serializable {
 	private Set<Titre> assignedTitres = new HashSet<>();
 	
 	
-
 	public int getAge() {
 		
 		return JoueurHelpers.calculAgeJoueurRecompense(dateNaissance,anneeRecompense);

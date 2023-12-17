@@ -37,9 +37,13 @@ public class JoueurDTO implements Serializable {
 	
 	private int nbrPointObtenu;
 	
+	private int rate;
+	
 	private int classement;
 	
 	private SelectionDTO selection;
+	
+	private ConfederationDTO confederation;
 	
 	private String anneeRecompense;
 	

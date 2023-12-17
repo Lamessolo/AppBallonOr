@@ -59,7 +59,7 @@ public class ClubController {
 		return new ResponseEntity<>(clubService.updateClub(clubId,clubCreateDto),HttpStatus.OK);	
 	}
 	
-	@PostMapping
+	@PostMapping("/add")
 	public ResponseEntity<ClubDTO> createClub(@RequestBody ClubCreateDTO clubCreateDto) throws Exception{
 		if(clubCreateDto == null) throw new IllegalAccessException("les données entrées sont incorrects");
 		return new ResponseEntity<>(clubService.createClub(clubCreateDto), HttpStatus.CREATED);	

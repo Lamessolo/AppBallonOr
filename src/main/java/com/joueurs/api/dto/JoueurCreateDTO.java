@@ -34,7 +34,11 @@ public class JoueurCreateDTO {
 	
 	private int classement;
 	
+	private int rate;
+	
 	private long selection;
+	
+	private long confederation;
 	
 	private String anneeRecompense;
 	

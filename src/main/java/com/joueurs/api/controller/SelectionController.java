@@ -60,14 +60,15 @@ public class SelectionController {
 		return new ResponseEntity<>(selectionService.createSelection(selectionCreateDto), HttpStatus.CREATED);	
 	}
 	
-	@GetMapping("confederation/{conf}")
+	/*
+	@GetMapping("selection/confederation}")
 	public PaginationSelectionResponse getSelectionByConfederation(@PathVariable("conf")String confederation,
 			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
 			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
 			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy)
 	{ 
 		return selectionService.findSelectionByConfederation(confederation,pageNo,pageSize,sortBy);
-	}
+	}*/
 	
 	@PutMapping("{id}")
 	@Operation(summary = "Update Selection", description = "This endpoint update une selection")

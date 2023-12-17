@@ -19,9 +19,13 @@ public interface JoueurRepository extends JpaRepository<Joueur,Long> {
 	
 	Page<Joueur> findByPosteId(@Param("id") long id, Pageable pageable);
 	
-	Page<Joueur> findByAnneeRecompense(@Param("byanneeRecompense")String byanneeRecompense, PageRequest pageable);
+	Page<Joueur> findByRate(@Param("rateNbr")long byRate, PageRequest pageable);
+	
+	Page<Joueur> findByAnneeRecompense(@Param("year")String year, PageRequest pageable);
 	
 	Page<Joueur> findByClassement(@Param("classement")long classement,PageRequest pageable);
+	
+	Page<Joueur> findByConfederationId(@Param("id")long ConfederationId, PageRequest pageable);
 	
 	@Query("SELECT j FROM Joueur j  WHERE " 
 			+ "j.name LIKE CONCAT ('%',:name,'%')"
@@ -51,6 +55,11 @@ public interface JoueurRepository extends JpaRepository<Joueur,Long> {
 	
 	@Query("SELECT j FROM Joueur j WHERE j.classement = 1")
 	Page<Joueur> findVainqueurBallondOr(PageRequest pageable);
+
+	
+
+	
+	
 
 			
 			

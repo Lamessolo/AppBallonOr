@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.joueurs.api.dto.ClubCreateDTO;
 import com.joueurs.api.dto.ClubDTO;
+import com.joueurs.api.dto.JoueurDTO;
 import com.joueurs.api.service.IClubService;
 import com.joueurs.api.utils.ConstanteApp;
 import com.joueurs.api.utils.PaginationClubResponse;
@@ -35,24 +36,19 @@ public class ClubController {
 	private final IClubService clubService;
 	
 	@GetMapping("/all")
+	@Operation(summary = "Get Clubs", description = "This endpoint retrieve all Clubs")
 	public List<ClubDTO> getAllClubs()
 	{		 
 		return clubService.getAllClub();
 	}
 	
 	@GetMapping("/{id}")
+	@Operation(summary = "Get Clubs by Id", description = "This endpoint retrieve Clubs by Id")
 	public ResponseEntity<ClubDTO> getClubById(@PathVariable("id") int clubId){
 		return new ResponseEntity<>(clubService.findClubById(clubId), HttpStatus.OK);
 		}
 	
-	@GetMapping("country/{pays}")
-	public PaginationClubResponse getClubByCountry(@PathVariable("pays")String pays,
-			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
-			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
-			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy)
-	{ 
-		return clubService.findClubAllByPays(pays,pageNo,pageSize,sortBy);
-		}
+ 
 		
 	@PutMapping("{id}")
 	public ResponseEntity<ClubDTO> updateClub(@PathVariable("id") int clubId,@RequestBody ClubCreateDTO clubCreateDto){		 
@@ -70,6 +66,25 @@ public class ClubController {
 	public ResponseEntity<Map<String,Boolean>> deleteClub(@PathVariable("id") int clubId){	
 			return new ResponseEntity<>(clubService.deleteClub(clubId), HttpStatus.OK);
 	}	
+	
+	
+	@GetMapping("pays/{pays}")
+	@Operation(summary = "Get Clubs by Pays", description = "This endpoint retrieve all Clubs by pays")
+	public List<ClubDTO> getClubsByPaysName(@PathVariable("pays") String pays)
+	{		 
+		return clubService.getClubByPays(pays);
+	}
+	
+	
+	@GetMapping("search/{term}")
+	@Operation(summary = "Search Club By Name", description = "This endpoint search Club By Name")
+	public ResponseEntity<List<ClubDTO>> searchClubByName(@PathVariable("term") String term){
+		
+		return new ResponseEntity<>(clubService.searchClubByName(term), HttpStatus.OK);
+		}
+	
+	
+	
 	
 }
 

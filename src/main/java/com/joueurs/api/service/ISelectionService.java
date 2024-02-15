@@ -12,10 +12,14 @@ public interface ISelectionService {
 	
 	SelectionDTO findSelectionById(long selectionId);
 	
+	Boolean findSelectionByName(String selectionName);
+	
 	SelectionDTO updateSelection(long selectionId, SelectionCreateDTO selectionCreateDto);
 
 	Map<String,Boolean> deleteSelection(long selectionId);
 
 	SelectionDTO createSelection(SelectionCreateDTO selectionCreateDto);
+
+	List<SelectionDTO> findSelectionByConfederation(String confederationName);
 	
 }

@@ -9,4 +9,5 @@ public interface IConfederationService {
 
 	
 	List<ConfederationDTO> getAllConfederation ();
+	ConfederationDTO findConfederationById (long id);
 }

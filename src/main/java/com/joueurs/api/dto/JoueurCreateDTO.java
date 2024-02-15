@@ -28,6 +28,8 @@ public class JoueurCreateDTO {
 	
 	private String imageUrl;
 	
+	private String imageUrlSelection;
+	
 	private long poste;
 	
 	private int nbrPointObtenu;

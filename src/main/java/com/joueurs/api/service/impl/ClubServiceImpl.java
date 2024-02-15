@@ -122,4 +122,21 @@ public class ClubServiceImpl implements IClubService {
 		return response;
 	}
 
+	@Override
+	public List<ClubDTO> getClubByPays(String pays) {
+		
+		List<Club> ClubsByPays = clubRepository.findByPays(pays);			
+		return ClubsByPays.stream()
+							.map(this::mapEntityToDto)
+							.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ClubDTO> searchClubByName(String term) {
+		List<Club> ClubsByName = clubRepository.searchByName(term);			
+		return ClubsByName.stream()
+							.map(this::mapEntityToDto)
+							.collect(Collectors.toList());
+	}
+
 }

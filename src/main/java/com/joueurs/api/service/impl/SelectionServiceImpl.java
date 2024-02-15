@@ -8,9 +8,6 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.joueurs.api.dto.SelectionCreateDTO;
@@ -19,7 +16,6 @@ import com.joueurs.api.entity.Selection;
 import com.joueurs.api.exception.SelectionNotFoundException;
 import com.joueurs.api.repository.SelectionRepository;
 import com.joueurs.api.service.ISelectionService;
-import com.joueurs.api.utils.PaginationSelectionResponse;
 
 
 @Service
@@ -77,38 +73,77 @@ public class SelectionServiceImpl implements ISelectionService{
 	@Override
 	public SelectionDTO createSelection(SelectionCreateDTO selectionCreateDto) {	   	
 		 // Validation des données d'entrée
-	    if (selectionCreateDto == null || selectionCreateDto.getName() == null || selectionCreateDto.getConfederation() == null)
+	    if ( selectionCreateDto.getName() == "" || selectionCreateDto.getConfederation() == "")
 	    {
 	      throw new IllegalArgumentException("Données d'entrée invalides.");
 	    }
-	    try {
-	        // Création de la nouvelle entité
-	        Selection createdNewSelection = new Selection();
-	        createdNewSelection.setConfederation(selectionCreateDto.getConfederation());
-	        createdNewSelection.setName(selectionCreateDto.getName());
-	        
-	        // Sauvegarde dans la base de données (dans une transaction)
-	        createdNewSelection = selectionRepository.save(createdNewSelection);
-	        
-	        // Conversion en DTO et retour
-	        return mapEntityToDto(createdNewSelection);
-	    } catch (DataIntegrityViolationException ex) {
-	        // Gestion des erreurs de contrainte (par exemple, clé primaire en double)
-	        throw new IllegalArgumentException("Une erreur de contrainte s'est produite lors de la création de la sélection.");
+	    
+	    if(findSelectionByName(selectionCreateDto.getName())){
+	    	throw new IllegalArgumentException(" Cette Selection Existe deja.");
+	    }else {
+	    	
+	    	 try {
+	 	        // Création de la nouvelle entité
+	 	        Selection createdNewSelection = new Selection();
+	 	        createdNewSelection.setConfederation(selectionCreateDto.getConfederation());
+	 	        createdNewSelection.setName(selectionCreateDto.getName());
+	 	        
+	 	        // Sauvegarde dans la base de données (dans une transaction)
+	 	        createdNewSelection = selectionRepository.save(createdNewSelection);
+	 	        
+	 	        // Conversion en DTO et retour
+	 	        return mapEntityToDto(createdNewSelection);
+	 	    } catch (DataIntegrityViolationException ex) {
+	 	        // Gestion des erreurs de contrainte (par exemple, clé primaire en double)
+	 	        throw new IllegalArgumentException("Une erreur de contrainte s'est produite lors de la création de la sélection.");
+	 	    }
 	    }
-	    		
+	       		
 	}
 	
 	
 	@Override
-	public SelectionDTO updateSelection(long selectionId, SelectionCreateDTO selectionCreateDto) {
-		 Selection selection = selectionRepository
-		    		.findById(selectionId)
-		    		.orElseThrow(()-> new SelectionNotFoundException("Selection", "id", selectionId)); 
-		 selection.setConfederation(selectionCreateDto.getConfederation());
-		 selection.setName(selectionCreateDto.getName());
-		 selectionRepository.save(selection);
-		 return mapEntityToDto(selection);	
+	public SelectionDTO updateSelection(long selectionId, SelectionCreateDTO selectionCreateDto){
+		  if ( selectionCreateDto.getName() == "" || selectionCreateDto.getConfederation() == "")
+		    {
+		      throw new IllegalArgumentException("Données d'entrée invalides.");
+		    }
+		  
+		  if(findSelectionByName(selectionCreateDto.getName())){
+		    	throw new IllegalArgumentException(" Cette Selection Existe deja.");
+		    }else{
+		    	 Selection selection = selectionRepository
+				    		.findById(selectionId)
+				    		.orElseThrow(()-> new SelectionNotFoundException("Selection", "id", selectionId)); 
+				 selection.setConfederation(selectionCreateDto.getConfederation());
+				 selection.setName(selectionCreateDto.getName());
+				 selectionRepository.save(selection);
+				 return mapEntityToDto(selection);	
+		    }
+		
+	}
+
+	@Override
+	public List<SelectionDTO> findSelectionByConfederation(String confederationName) {
+		
+		List<Selection> selectionsByConfederation = selectionRepository.findByConfederation(confederationName);	
+		List<SelectionDTO> content = selectionsByConfederation.stream().map(this::mapEntityToDto).collect(Collectors.toList());		
+		return content;
+		
+	}
+
+	
+	
+	@Override
+	public Boolean findSelectionByName(String selectionName) {
+		
+		Optional<Selection> entitySelectionOptional = selectionRepository.findByName(selectionName);
+		if (entitySelectionOptional.isPresent())
+		{  Selection selection = entitySelectionOptional.get();
+		     System.out.println(selection);
+		return true;
+		}		
+		return false;
 	}
 
 }

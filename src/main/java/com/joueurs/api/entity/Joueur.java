@@ -66,6 +66,9 @@ public class Joueur implements Serializable {
 	@Column(name="image_url")
 	private String imageUrl;
 	
+	@Column(name="image_url_selection")
+	private String imageUrlSelection;
+	
 	//@OneToOne 
 	//@JoinColumn(name="selection_id",referencedColumnName="id")
 	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 Selection

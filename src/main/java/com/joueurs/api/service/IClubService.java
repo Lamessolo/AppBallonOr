@@ -11,7 +11,9 @@ import com.joueurs.api.utils.PaginationClubResponse;
 public interface IClubService  {
 
 	List<ClubDTO> getAllClub ();
-
+	
+	List<ClubDTO> getClubByPays (String pays);
+	
 	ClubDTO findClubById(long clubId);
 	
 	PaginationClubResponse findClubAllByPays(String pays,int pageNo,int pageSize,String sortBy);
@@ -21,4 +23,6 @@ public interface IClubService  {
 	ClubDTO createClub(ClubCreateDTO clubCreateDto);
 
 	Map<String,Boolean> deleteClub(long clubId);
+	
+	List<ClubDTO> searchClubByName (String term);
 }

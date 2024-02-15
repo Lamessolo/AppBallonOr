@@ -167,6 +167,7 @@ public class JoueurServiceImpl implements IJoueurService {
 		joueur.setImageUrl(joueurCreateDto.getImageUrl());
 		joueur.setSurnom(joueurCreateDto.getSurnom());
 		joueur.setRate(joueurCreateDto.getRate());
+		joueur.setImageUrlSelection(joueurCreateDto.getImageUrlSelection());
 		joueur.setDescription(joueurCreateDto.getDescription());
 		joueur.setNbrPointObtenu(joueurCreateDto.getNbrPointObtenu());
 		joueur.setAnneeRecompense(joueurCreateDto.getAnneeRecompense());
@@ -402,8 +403,42 @@ public class JoueurServiceImpl implements IJoueurService {
 		pageJoueursResponse.setPageSize(listeDesJoueursByRate.getSize());
 		pageJoueursResponse.setTotalElements(listeDesJoueursByRate.getTotalElements());
 		pageJoueursResponse.setTotalPages(listeDesJoueursByRate.getTotalPages());
+		return pageJoueursResponse;
+	}
+
+	@Override
+	public PaginationResponse findBySelection(int selectionId, int pageNo, int pageSize, String sortBy) {
+		PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
+		Page<Joueur> listeDesJoueursBySelection = joueurRepository.findBySelectionId(selectionId,pageable);
+		List<Joueur> joueursBySelection = listeDesJoueursBySelection.getContent();
+		List<JoueurDTO> contentJoueurBySelection = joueursBySelection.stream().map(this::mapEntityToDto).collect(Collectors.toList());
+		
+		PaginationResponse pageJoueursResponse = new PaginationResponse();
+		pageJoueursResponse.setContent(contentJoueurBySelection);
+		pageJoueursResponse.setPageNo(listeDesJoueursBySelection.getNumber());
+		pageJoueursResponse.setPageSize(listeDesJoueursBySelection.getSize());
+		pageJoueursResponse.setTotalElements(listeDesJoueursBySelection.getTotalElements());
+		pageJoueursResponse.setTotalPages(listeDesJoueursBySelection.getTotalPages());
 		
 		return pageJoueursResponse;
+	}
+
+	@Override
+	public PaginationResponse findByPaysName(String paysName, int pageNo, int pageSize, String sortBy) {
+		PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
+		Page<Joueur> joueursByPaysName = joueurRepository.findByPays(paysName,pageable);
+		List<Joueur> joueursByPays = joueursByPaysName.getContent();
+		List<JoueurDTO> contentJoueurByPays = joueursByPays.stream().map(this::mapEntityToDto).collect(Collectors.toList());
+		
+		PaginationResponse pageJoueursResponse = new PaginationResponse();
+		pageJoueursResponse.setContent(contentJoueurByPays);
+		pageJoueursResponse.setPageNo(joueursByPaysName.getNumber());
+		pageJoueursResponse.setPageSize(joueursByPaysName.getSize());
+		pageJoueursResponse.setTotalElements(joueursByPaysName.getTotalElements());
+		pageJoueursResponse.setTotalPages(joueursByPaysName.getTotalPages());
+		
+		return pageJoueursResponse;
+		
 	}
 
 	

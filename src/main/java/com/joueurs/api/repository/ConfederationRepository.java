@@ -10,4 +10,5 @@ import com.joueurs.api.entity.Confederation;
 public interface ConfederationRepository extends JpaRepository<Confederation, Long>{
 
 	
+	
 }

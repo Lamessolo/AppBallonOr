@@ -48,16 +48,7 @@ private  IJoueurService joueurService;
 	return joueurService.getAllJoueur(pageNo,pageSize,sortBy);
 	}
 	
-	
-	@GetMapping("/vainqueurs")
-	@Operation(summary = "Get ALL Joueurs vainqueur du Ballon Or", description = "This endpoint retrieve all vainqueur")
-	public PaginationResponse getVainqueurBallondOr(
-		@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
-		@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
-		@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy){
-	 
-	return joueurService.getVainqueurBallondOr(pageNo,pageSize,sortBy);
-	}
+
 		
 	@GetMapping("/{id}")
 	@Operation(summary = "Get Joueur By Id", description = "This endpoint retrieve joueur by Id")
@@ -79,15 +70,6 @@ private  IJoueurService joueurService;
 			return new ResponseEntity<>(joueurService.updateJoueur(joueurId,joueurCreateDto),HttpStatus.OK);		
 	}
 	
-	@PutMapping("{joueurId}/titre/{titreId}")
-	@Operation(summary = "Assigne titre to Joueur", description = "This endpoint assigne titre to joueurs")
-	public ResponseEntity<JoueurDTO> assignedTitreToJoueur (
-			@PathVariable("joueurId")int joueurId, 
-			@PathVariable("titreId")int titreId){ 
-
-   return new ResponseEntity<>(joueurService.assignedTitreToJoueur(joueurId,titreId),HttpStatus.OK);
-
-	}
 	
 	@DeleteMapping("{id}")
 	@Operation(summary = "Delete Joueur By Id", description = "This endpoint delete joueur by Id")
@@ -106,6 +88,8 @@ private  IJoueurService joueurService;
 		return joueurService.findJoueurByMotClef(pageNo,pageSize,sortBy,byMotClef);
 	}
 
+	
+	
 	@GetMapping("/poste/{id}")
 	public PaginationResponse getJoueursByPoste(
 			@PathVariable("id")int posteId,
@@ -127,6 +111,16 @@ private  IJoueurService joueurService;
 	return joueurService.findByRate(rateNbr,pageNo,pageSize,sortBy);
 	}
 	
+	@GetMapping("/selection/{selectionId}")
+	public PaginationResponse getJoueursBySelection(
+			@PathVariable("selectionId")int selectionId,
+		@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
+		@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
+		@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy	
+		){
+	return joueurService.findBySelection(selectionId,pageNo,pageSize,sortBy);
+	}
+	
 	@GetMapping("/annee/{year}")
 	public PaginationResponse getJoueursByAnnee(
 			@PathVariable("year")String year,
@@ -138,16 +132,7 @@ private  IJoueurService joueurService;
 	return joueurService.findByAnnee(year,pageNo,pageSize,sortBy);
 	}
 	
-	@GetMapping("/position")
-	public PaginationResponse getJoueursByClassementPosition(
-		@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
-		@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
-		@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy,
-		@RequestParam(value="byClassement",required=false) int byClassementPosition
-		){
-	 
-	return joueurService.findByClassementPosition(pageNo,pageSize,sortBy,byClassementPosition);
-	}
+	
 	
 	@GetMapping("/club")
 	public PaginationResponse getJoueurByClubId(
@@ -157,33 +142,6 @@ private  IJoueurService joueurService;
 			@RequestParam(value="byClubId",required=false) int byClubId
 			) {
 		return joueurService.findByClubId(pageNo,pageSize,sortBy,byClubId);
-	}
-	
-	
-	
-	@GetMapping("/searchByParametres/poste/{posteId}/classement/{classement}/annee/{anneeRecompense}")
-	public PaginationResponse searchJoueurByParametres(
-			@PathVariable("posteId")int posteId,
-			@PathVariable("classement")int classement,
-			@PathVariable("anneeRecompense")String anneeRecompense,
-			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
-			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
-			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy)
-	{		   		
-		    return joueurService.findJoueurByParametres(posteId,classement,anneeRecompense,pageNo,pageSize,sortBy);	
-	}
-	
-	
-	@GetMapping("/poste/{posteId}/classement/{classement}")
-	public PaginationResponse getJoueurByParametres(
-			@PathVariable("posteId")int posteId,
-			@PathVariable("classement")int classement,
-			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
-			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
-			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy)
-			{	
-		
-		    return joueurService.findJoueurByPosteAndClassementParametres(posteId,classement,pageNo,pageSize,sortBy);	
 	}
 	
 	
@@ -198,6 +156,16 @@ private  IJoueurService joueurService;
 	}
 	
 	
+	@GetMapping("/pays/{paysName}")
+	@Operation(summary = "Get Joueurs by paysName", description = "This endpoint retrieves all players from the same country.")
+	public PaginationResponse getJoueurByClubOfPays(
+			@PathVariable("paysName")String paysName,
+			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
+			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
+			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy
+			) {
+		return joueurService.findByPaysName(paysName,pageNo,pageSize,sortBy);
+	}
 	
 	
 	

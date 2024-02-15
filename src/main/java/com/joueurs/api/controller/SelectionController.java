@@ -13,17 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
-import com.joueurs.api.dto.JoueurCreateDTO;
-import com.joueurs.api.dto.JoueurDTO;
+
 import com.joueurs.api.dto.SelectionCreateDTO;
 import com.joueurs.api.dto.SelectionDTO;
 import com.joueurs.api.service.ISelectionService;
-import com.joueurs.api.utils.ConstanteApp;
-
-import com.joueurs.api.utils.PaginationSelectionResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +33,17 @@ public class SelectionController {
 
 	private final ISelectionService selectionService;
 	
+	
+	
 	@GetMapping("/all")
+	@Operation(summary = "Get All Selection", description = "This endpoint retrieve selections")
 	public List<SelectionDTO> getAllSelections(){
 		 
 		return selectionService.getAllSelection();
 	}
 	
 	@GetMapping("/{id}")
+	@Operation(summary = "Get Selection By Id", description = "This endpoint retrieve selection by Id")
 	public ResponseEntity<SelectionDTO> getSelectionById(@PathVariable("id") int selectionId){
 		
 	return new ResponseEntity<>(selectionService.findSelectionById(selectionId), HttpStatus.OK);
@@ -54,11 +54,19 @@ public class SelectionController {
 		return new ResponseEntity<>(selectionService.deleteSelection(selectionId), HttpStatus.OK);
 	}
 	
-	@PostMapping
+	@PostMapping("/{add}")
 	public ResponseEntity<SelectionDTO> createSelection(@RequestBody SelectionCreateDTO selectionCreateDto){		
-
-		return new ResponseEntity<>(selectionService.createSelection(selectionCreateDto), HttpStatus.CREATED);	
+			
+		return new ResponseEntity<>(selectionService.createSelection(selectionCreateDto),HttpStatus.CREATED);	
 	}
+	
+	
+	@GetMapping("conf/{confederationName}")
+	@Operation(summary = "Get Selection By Confederation Name", description = "This endpoint retrieve selection by Confederation Name")
+	public ResponseEntity<List<SelectionDTO>> getSelectionByConfederationName(@PathVariable("confederationName") String confederationName){
+		
+	return new ResponseEntity<>(selectionService.findSelectionByConfederation(confederationName), HttpStatus.OK);
+		}
 	
 	/*
 	@GetMapping("selection/confederation}")

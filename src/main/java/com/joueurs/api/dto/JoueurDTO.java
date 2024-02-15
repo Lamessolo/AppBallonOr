@@ -35,6 +35,8 @@ public class JoueurDTO implements Serializable {
 	
 	private String imageUrl;
 	
+	private String imageUrlSelection;
+	
 	private int nbrPointObtenu;
 	
 	private int rate;

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.joueurs.api.dto.ConfederationDTO;
 import com.joueurs.api.entity.Confederation;
+import com.joueurs.api.entity.Joueur;
+import com.joueurs.api.exception.ConfederationNotFoundException;
+import com.joueurs.api.exception.JoueurNotFoundException;
 import com.joueurs.api.repository.ConfederationRepository;
 import com.joueurs.api.service.IConfederationService;
 
@@ -38,6 +41,14 @@ public class ConfederationServiceImpl implements IConfederationService {
 		List<Confederation> listeDesConfederations = confederationRepository.findAll();	
 		List<ConfederationDTO> content = listeDesConfederations.stream().map(this::mapEntityToDto).collect(Collectors.toList());		
 		return content;
+	}
+
+	@Override
+	public ConfederationDTO findConfederationById(long confederationId) {
+		Confederation confederation = confederationRepository
+				.findById(confederationId)
+				.orElseThrow(()-> new ConfederationNotFoundException("Confederation", "id", confederationId));		
+				return mapEntityToDto(confederation);	
 	}
 
 }

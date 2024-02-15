@@ -22,6 +22,8 @@ public interface IJoueurService  {
 	
 	PaginationResponse findByAnnee(String year,int pageNo, int pageSize, String sortBy);
 	
+	PaginationResponse findBySelection(int selectionId,int pageNo, int pageSize, String sortBy);
+	
 	PaginationResponse findByClassementPosition(int pageNo, int pageSize, String sortBy, int byClassementPosition);
 	
 	PaginationResponse findByClubId(int pageNo, int pageSize, String sortBy, long byClubId);
@@ -51,6 +53,8 @@ public interface IJoueurService  {
 			String sortBy);
 
 	JoueurDTO assignedTitreToJoueur(long joueurId, long titreId);
+
+	PaginationResponse findByPaysName(String paysName, int pageNo, int pageSize, String sortBy);
 
 	
 	

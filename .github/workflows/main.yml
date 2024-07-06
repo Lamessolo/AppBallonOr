@@ -43,6 +43,6 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-east-1' # Replace with your AWS region
       run: |
-          aws s3 cp target/${{ env.JAR_NAME }} s3://footballlegendes-bucket/${{ env.JAR_NAME }}
+          aws s3 cp target/${{ env.JAR_NAME }} s3://app-legendesfootball/${{ env.JAR_NAME }}
 
     

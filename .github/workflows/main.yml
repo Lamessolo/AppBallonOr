@@ -18,11 +18,17 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
         
-        
     # Build and test the application
     - name: Build with Maven
       run: mvn clean install
-      
+
+    # Rename JAR with versioning and unique timestamp
+    - name: Rename JAR with versioning
+      run: |
+        TIMESTAMP=$(date +%Y%m%d%H%M%S)
+        mv target/api-joueurs-0.0.1-SNAPSHOT.jar target/api-joueurs-${TIMESTAMP}.jar 
+        echo "JAR_NAME=api-joueurs-${TIMESTAMP}.jar" >> $GITHUB_ENV
+ 
     # Archive build artifacts
     - name: Archive build artifacts
       uses: actions/upload-artifact@v2
@@ -37,6 +43,6 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-east-1' # Replace with your AWS region
       run: |
-          aws s3 cp target/*.jar s3://app-legendesfootball/api-joueurs-0.0.1-SNAPSHOT.jar
+          aws s3 cp target/${{ env.JAR_NAME }} s3://footballlegendes-bucket/${{ env.JAR_NAME }}
 
     

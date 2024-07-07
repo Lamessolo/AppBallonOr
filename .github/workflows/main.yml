@@ -62,6 +62,13 @@ jobs:
         EC2_HOST: ${{ secrets.EC2_HOST }}
         JAR_NAME: ${{ env.JAR_NAME }}
       run: |
-        ssh -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            aws s3 cp s3://app-legendesfootball/${JAR_NAME} /home/ec2-user/${{ env.JAR_NAME }}
-            pkill -f 'java -jar' || true
+        echo "${{ secrets.EC2_SSH_KEY }}" > gdb-aws-ec2.pem
+        chmod 400 gdb-aws-ec2.pem
+        # Debugging step to check if the key file is correctly created
+        ls -l gdb-aws-ec2.pem
+        cat gdb-aws-ec2.pem
+        ssh -i gdb-aws-ec2.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          aws s3 cp s3://app-legendesfootball/${JAR_NAME} /home/ec2-user/${JAR_NAME}
+          pkill -f 'java -jar' || true
+          nohup java -jar /home/ec2-user/${JAR_NAME} > /home/ec2-user/app.log 2>&1 &
+        EOF

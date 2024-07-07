@@ -1,0 +1,48 @@
+
+name: Java CI Deploy Jar App to AWS S3
+
+on:
+  push:
+    branches: [ "main" ]
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    # Build and test the application
+    - name: Build with Maven
+      run: mvn clean install
+
+    # Rename JAR with versioning and unique timestamp
+    - name: Rename JAR with versioning
+      run: |
+        TIMESTAMP=$(date +%Y%m%d%H%M%S)
+        mv target/api-joueurs-0.0.1-SNAPSHOT.jar target/api-joueurs-${TIMESTAMP}.jar 
+        echo "JAR_NAME=api-joueurs-${TIMESTAMP}.jar" >> $GITHUB_ENV
+ 
+    # Archive build artifacts
+    - name: Archive build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: jar-artifact
+        path: target/*.jar
+
+    # Upload to S3
+    - name: Upload to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'us-east-1' # Replace with your AWS region
+      run: |
+          aws s3 cp target/${{ env.JAR_NAME }} s3://app-legendesfootball/${{ env.JAR_NAME }}
+
+    

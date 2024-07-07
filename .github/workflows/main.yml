@@ -45,4 +45,23 @@ jobs:
       run: |
           aws s3 cp target/${{ env.JAR_NAME }} s3://app-legendesfootball/${{ env.JAR_NAME }}
 
-    
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Download build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: jar-artifact
+        path: .
+    - name: Deploy to AWS EC2
+      env:
+        AWS_ACCESS_KEY_ID: '${{ secrets.AWS_ACCESS_KEY_ID }}'
+        AWS_SECRET_ACCESS_KEY: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
+        AWS_REGION: 'us-east-1' # Replace with your AWS region
+        EC2_INSTANCE_ID: '${{ secrets.EC2_INSTANCE_ID }}'
+        JAR_NAME: '${{ env.JAR_NAME }}'
+      run: >
+        ssh -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no
+        ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          aws s3 cp s3://app-legendesfootball/${JAR_NAME} /home/ec2-user/${{ env.JAR_NAME }}
+          pkill -f 'java -jar' || true
+  

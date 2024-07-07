@@ -62,10 +62,6 @@ jobs:
         EC2_HOST: ${{ secrets.EC2_HOST }}
         JAR_NAME: ${{ env.JAR_NAME }}
       run: |
-        echo "${{ secrets.EC2_SSH_KEY }}" > ec2-key.pem
-        chmod 400 ec2-key.pem
-        ssh -i ec2-key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-          aws s3 cp s3://app-legendesfootball/${JAR_NAME} /home/ec2-user/${JAR_NAME}
-          pkill -f 'java -jar' || true
-          nohup java -jar /home/ec2-user/${JAR_NAME} > /home/ec2-user/app.log 2>&1 &
-        EOF
+        ssh -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            aws s3 cp s3://app-legendesfootball/${JAR_NAME} /home/ec2-user/${{ env.JAR_NAME }}
+            pkill -f 'java -jar' || true

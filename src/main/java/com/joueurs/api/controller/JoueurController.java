@@ -1,7 +1,9 @@
 package com.joueurs.api.controller;
 
+import java.util.Date;
 import java.util.Map;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,7 +33,6 @@ public class JoueurController {
 
 private  IJoueurService joueurService;
 
-
 	
 	public JoueurController(IJoueurService joueurService) {
 	this.joueurService = joueurService;
@@ -48,7 +49,6 @@ private  IJoueurService joueurService;
 	return joueurService.getAllJoueur(pageNo,pageSize,sortBy);
 	}
 	
-
 		
 	@GetMapping("/{id}")
 	@Operation(summary = "Get Joueur By Id", description = "This endpoint retrieve joueur by Id")
@@ -69,15 +69,13 @@ private  IJoueurService joueurService;
 	{				 
 			return new ResponseEntity<>(joueurService.updateJoueur(joueurId,joueurCreateDto),HttpStatus.OK);		
 	}
-	
-	
+		
 	@DeleteMapping("{id}")
 	@Operation(summary = "Delete Joueur By Id", description = "This endpoint delete joueur by Id")
 	public ResponseEntity<Map<String,Boolean>> deleteJoueur(@PathVariable("id") int joueurId){	
 			return new ResponseEntity<>(joueurService.deleteJoueur(joueurId), HttpStatus.OK);
 	}	
-	
-		
+			
 	@GetMapping("/search")
 	public PaginationResponse getJoueurByMotClef(
 			@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
@@ -88,7 +86,6 @@ private  IJoueurService joueurService;
 		return joueurService.findJoueurByMotClef(pageNo,pageSize,sortBy,byMotClef);
 	}
 
-	
 	
 	@GetMapping("/poste/{id}")
 	public PaginationResponse getJoueursByPoste(
@@ -131,8 +128,7 @@ private  IJoueurService joueurService;
 	 
 	return joueurService.findByAnnee(year,pageNo,pageSize,sortBy);
 	}
-	
-	
+		
 	
 	@GetMapping("/club")
 	public PaginationResponse getJoueurByClubId(
@@ -155,7 +151,6 @@ private  IJoueurService joueurService;
 		return joueurService.findByConfederation(pageNo,pageSize,sortBy,byConfederationId);
 	}
 	
-	
 	@GetMapping("/pays/{paysName}")
 	@Operation(summary = "Get Joueurs by paysName", description = "This endpoint retrieves all players from the same country.")
 	public PaginationResponse getJoueurByClubOfPays(
@@ -167,6 +162,25 @@ private  IJoueurService joueurService;
 		return joueurService.findByPaysName(paysName,pageNo,pageSize,sortBy);
 	}
 	
+	 @GetMapping("/mois-anniversaire")
+	 @Operation(summary = "This is birthday players", description = "This endpoint retrieves all players.")
+	public PaginationResponse getJoueursByTodayBirthday(
+				@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
+				@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
+				@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy	
+				) {
+			return joueurService.findJoueursByTodayBirthday(pageNo,pageSize,sortBy);
+		}
+	 
+	@GetMapping("/datenaissance")
+	@Operation(summary = "This is birthday players", description = "This endpoint retrieves all players.")
+    public PaginationResponse getJoueursByDateDeNaissance(
+	    		@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
+				@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
+				@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy,
+	    		@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+	        return joueurService.findByDateNaissance(date,pageNo,pageSize,sortBy);
+	    }
 	
 	
 }

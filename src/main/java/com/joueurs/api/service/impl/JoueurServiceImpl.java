@@ -1,5 +1,7 @@
 package com.joueurs.api.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -439,6 +441,42 @@ public class JoueurServiceImpl implements IJoueurService {
 		
 		return pageJoueursResponse;
 		
+	}
+
+	@Override
+	public PaginationResponse findJoueursByTodayBirthday(int pageNo, int pageSize, String sortBy) {
+		Calendar today = Calendar.getInstance();
+        int month = today.get(Calendar.MONTH) + 1; // Les mois commencent à 0 en Java, donc on ajoute 1
+        int day = today.get(Calendar.DAY_OF_MONTH);
+        PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
+		Page<Joueur> joueursByTodayBirthday = joueurRepository.findByMonthAndDay(month,pageable);
+		List<Joueur> joueursByBirthday = joueursByTodayBirthday.getContent();
+		List<JoueurDTO> contentJoueurByBirthday  = joueursByBirthday.stream().map(this::mapEntityToDto).collect(Collectors.toList());
+		
+		PaginationResponse pageJoueursResponse = new PaginationResponse();
+		pageJoueursResponse.setContent(contentJoueurByBirthday);
+		pageJoueursResponse.setPageNo(joueursByTodayBirthday.getNumber());
+		pageJoueursResponse.setPageSize(joueursByTodayBirthday.getSize());
+		pageJoueursResponse.setTotalElements(joueursByTodayBirthday.getTotalElements());
+		pageJoueursResponse.setTotalPages(joueursByTodayBirthday.getTotalPages());
+        
+        return pageJoueursResponse;
+	}
+
+	@Override
+	public PaginationResponse findByDateNaissance(Date dateNaissance, int pageNo, int pageSize, String sortBy) {
+		  PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
+			Page<Joueur> joueursByDateNaissance = joueurRepository.findByDateNaissance(dateNaissance,pageable);
+			List<Joueur> joueursByBirthdayNaissance = joueursByDateNaissance.getContent();
+			List<JoueurDTO> contentJoueurByBirthdayNaissance  = joueursByBirthdayNaissance.stream().map(this::mapEntityToDto).collect(Collectors.toList());
+			
+			PaginationResponse pageJoueursResponse = new PaginationResponse();
+			pageJoueursResponse.setContent(contentJoueurByBirthdayNaissance);
+			pageJoueursResponse.setPageNo(joueursByDateNaissance.getNumber());
+			pageJoueursResponse.setPageSize(joueursByDateNaissance.getSize());
+			pageJoueursResponse.setTotalElements(joueursByDateNaissance.getTotalElements());
+			pageJoueursResponse.setTotalPages(joueursByDateNaissance.getTotalPages());
+			return pageJoueursResponse;
 	}
 
 	

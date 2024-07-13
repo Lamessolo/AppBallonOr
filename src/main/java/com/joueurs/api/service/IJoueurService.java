@@ -1,9 +1,13 @@
 package com.joueurs.api.service;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+
 import com.joueurs.api.dto.JoueurCreateDTO;
 import com.joueurs.api.dto.JoueurDTO;
+import com.joueurs.api.entity.Joueur;
 import com.joueurs.api.utils.PaginationResponse;
 
 public interface IJoueurService  {
@@ -56,7 +60,9 @@ public interface IJoueurService  {
 
 	PaginationResponse findByPaysName(String paysName, int pageNo, int pageSize, String sortBy);
 
+	PaginationResponse findJoueursByTodayBirthday(int pageNo,int pageSize,String sortBy);
 	
+	PaginationResponse findByDateNaissance(Date dateNaissance,int pageNo,int pageSize,String sortBy);
 	
 
 

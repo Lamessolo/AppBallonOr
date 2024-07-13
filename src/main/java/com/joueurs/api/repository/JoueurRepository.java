@@ -1,5 +1,6 @@
 package com.joueurs.api.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -63,7 +64,11 @@ public interface JoueurRepository extends JpaRepository<Joueur,Long> {
 	Page<Joueur> findByPays(String paysName, PageRequest pageable);
 
 	
-
+	 @Query("SELECT j FROM Joueur j WHERE MONTH(j.dateNaissance) = :month")
+	Page<Joueur> findByMonthAndDay(@Param("month") int month,PageRequest pageable);
+	 
+	 
+	 Page<Joueur> findByDateNaissance(Date dateNaissance,PageRequest pageable);
 	
 	
 

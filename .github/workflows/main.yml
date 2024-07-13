@@ -40,35 +40,35 @@ jobs:
         AWS_REGION: 'us-east-1' # Replace with your AWS region
       run: aws s3 cp target/${{ env.JAR_NAME }} s3://app-legendesfootball/${{ env.JAR_NAME }}
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
+  #deploy:
+    #needs: build
+    #runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    #steps:
+    #- name: Checkout code
+      #uses: actions/checkout@v2
 
-    - name: Download build artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: jar-artifact
-        path: .
+   # - name: Download build artifacts
+    #  uses: actions/download-artifact@v2
+    #  with:
+     #   name: jar-artifact
+     #   path: .
 
-    - name: Deploy to AWS EC2
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: 'us-east-1' # Replace with your AWS region
-        EC2_HOST: ${{ secrets.EC2_HOST }}
-        JAR_NAME: ${{ env.JAR_NAME }}
-      run: |
-        echo "${{ secrets.EC2_SSH_KEY }}" > ec2-gdb-aws.pem
-        chmod 400 ec2-gdb-aws.pem
+   # - name: Deploy to AWS EC2
+    #  env:
+      #  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+       # AWS_REGION: 'us-east-1' # Replace with your AWS region
+      #  EC2_HOST: ${{ secrets.EC2_HOST }}
+      #  JAR_NAME: ${{ env.JAR_NAME }}
+     # run: |
+        #echo "${{ secrets.EC2_SSH_KEY }}" > ec2-gdb-aws.pem
+      #  chmod 400 ec2-gdb-aws.pem
         # Debugging step to check if the key file is correctly created
-        ls -l ec2-gdb-aws.pem
-        cat ec2-gdb-aws.pem
-        ssh -i ec2-gdb-aws.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-          aws s3 cp s3://app-legendesfootball/${JAR_NAME} /home/ec2-user/${JAR_NAME}
-          pkill -f 'java -jar' || true
-          nohup java -jar /home/ec2-user/${JAR_NAME} > /home/ec2-user/app.log 2>&1 &
-        EOF
+       # ls -l ec2-gdb-aws.pem
+       # cat ec2-gdb-aws.pem
+       # ssh -i ec2-gdb-aws.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+        #  aws s3 cp s3://app-legendesfootball/${JAR_NAME} /home/ec2-user/${JAR_NAME}
+        #  pkill -f 'java -jar' || true
+         # nohup java -jar /home/ec2-user/${JAR_NAME} > /home/ec2-user/app.log 2>&1 &
+      #  EOF

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.joueurs.api.dto.ConfederationDTO;
 import com.joueurs.api.entity.Confederation;
-import com.joueurs.api.entity.Joueur;
+
 import com.joueurs.api.exception.ConfederationNotFoundException;
-import com.joueurs.api.exception.JoueurNotFoundException;
+
 import com.joueurs.api.repository.ConfederationRepository;
 import com.joueurs.api.service.IConfederationService;
 

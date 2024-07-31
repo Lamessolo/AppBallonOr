@@ -6,26 +6,26 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name="tbl_selection")
 @Data
-@AllArgsConstructor
+@Entity
+@Table(name="tbl_imageSource")
 @NoArgsConstructor
-public class Selection {
+@AllArgsConstructor
+public class ImageSource {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	 @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+	 @Column(name="fileName")
+    private String fileName;
+	 
+	 @Column(name="filePath")
+    private String filePath;
 	
-	@Column(name="name")
-	private String name;
-	
-	@Column(name="confederation")
-	private String confederation ;
-	
+
 }

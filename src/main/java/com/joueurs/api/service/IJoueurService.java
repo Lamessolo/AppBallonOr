@@ -1,20 +1,21 @@
 package com.joueurs.api.service;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.Page;
+
 
 import com.joueurs.api.dto.JoueurCreateDTO;
 import com.joueurs.api.dto.JoueurDTO;
-import com.joueurs.api.entity.Joueur;
+
 import com.joueurs.api.utils.PaginationResponse;
 
 public interface IJoueurService  {
 
 	JoueurDTO createJoueur(JoueurCreateDTO joueurCreateDto);
 	
-	PaginationResponse getAllJoueur(int pageNo,int pageSize,String sortBy);
+	PaginationResponse getAllJoueur(int pageNo,int pageSize,String sortBy,String dir);
 	
 	PaginationResponse getVainqueurBallondOr(int pageNo,int pageSize,String sortBy);
 	
@@ -31,6 +32,8 @@ public interface IJoueurService  {
 	PaginationResponse findByClassementPosition(int pageNo, int pageSize, String sortBy, int byClassementPosition);
 	
 	PaginationResponse findByClubId(int pageNo, int pageSize, String sortBy, long byClubId);
+	
+	PaginationResponse findByCompteId (long byCompteId,int pageNo, int pageSize, String sortBy);
 	
 	PaginationResponse findJoueurByMotClef(int pageNo, int pageSize, String sortBy, String byMotClef);
 	
@@ -56,13 +59,16 @@ public interface IJoueurService  {
 			int pageNo, int pageSize, 
 			String sortBy);
 
-	JoueurDTO assignedTitreToJoueur(long joueurId, long titreId);
-
 	PaginationResponse findByPaysName(String paysName, int pageNo, int pageSize, String sortBy);
 
 	PaginationResponse findJoueursByTodayBirthday(int pageNo,int pageSize,String sortBy);
 	
 	PaginationResponse findByDateNaissance(Date dateNaissance,int pageNo,int pageSize,String sortBy);
+	
+	
+	PaginationResponse findJoueursByIds(List<Integer> ids, int pageNo,int pageSize,String sortBy);
+
+
 	
 
 

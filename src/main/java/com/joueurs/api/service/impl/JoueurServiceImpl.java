@@ -1,11 +1,11 @@
 package com.joueurs.api.service.impl;
 
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -17,23 +17,23 @@ import org.springframework.stereotype.Service;
 import com.joueurs.api.dto.JoueurCreateDTO;
 import com.joueurs.api.dto.JoueurDTO;
 import com.joueurs.api.entity.Club;
+import com.joueurs.api.entity.Compte;
 import com.joueurs.api.entity.Confederation;
 import com.joueurs.api.entity.Joueur;
 import com.joueurs.api.entity.Poste;
 import com.joueurs.api.entity.Selection;
-import com.joueurs.api.entity.Titre;
 import com.joueurs.api.exception.ClubNotFoundException;
+import com.joueurs.api.exception.CompteNotFoundException;
 import com.joueurs.api.exception.ConfederationNotFoundException;
 import com.joueurs.api.exception.JoueurNotFoundException;
 import com.joueurs.api.exception.PosteNotFoundException;
 import com.joueurs.api.exception.SelectionNotFoundException;
-import com.joueurs.api.exception.TitreNotFoundException;
 import com.joueurs.api.repository.ClubRepository;
+import com.joueurs.api.repository.CompteRepository;
 import com.joueurs.api.repository.ConfederationRepository;
 import com.joueurs.api.repository.JoueurRepository;
 import com.joueurs.api.repository.PosteRepository;
 import com.joueurs.api.repository.SelectionRepository;
-import com.joueurs.api.repository.TitreRepository;
 import com.joueurs.api.service.IJoueurService;
 import com.joueurs.api.utils.PaginationResponse;
 
@@ -43,23 +43,24 @@ public class JoueurServiceImpl implements IJoueurService {
 	private  JoueurRepository joueurRepository;
 	private  PosteRepository posteRepository ;
 	private  SelectionRepository selectionRepository;
-	private  TitreRepository  titreRepository;
 	private  ClubRepository clubRepository;
 	private  ConfederationRepository confederationRepository;
+	private CompteRepository compteRepository;
+	
 	
 	private  ModelMapper mapper ;
 	
 	
 	public JoueurServiceImpl(JoueurRepository joueurRepository, PosteRepository posteRepository,
 			SelectionRepository selectionRepository,
-			TitreRepository titreRepository, 
+			CompteRepository compteRepository,
 			ClubRepository clubRepository,
 			ConfederationRepository confederationRepository,
 			ModelMapper mapper) {
 		this.joueurRepository = joueurRepository;
 		this.posteRepository = posteRepository;
+		this.compteRepository = compteRepository;
 		this.selectionRepository = selectionRepository;
-		this.titreRepository = titreRepository;
 		this.clubRepository = clubRepository;
 		this.confederationRepository = confederationRepository;
 		this.mapper = mapper;
@@ -88,6 +89,9 @@ public class JoueurServiceImpl implements IJoueurService {
 					.findById(joueurCreateDto.getPoste())
 					.orElseThrow(()-> new PosteNotFoundException("Poste","id", joueurCreateDto.getPoste()));
 			
+			Compte compte =compteRepository.findById(joueurCreateDto.getCompte())
+					.orElseThrow(()-> new CompteNotFoundException("Compte","id", joueurCreateDto.getCompte()));
+			
 			Selection selection  = selectionRepository
 					.findById(joueurCreateDto.getSelection())
 					.orElseThrow(()-> new SelectionNotFoundException("Selection","id", joueurCreateDto.getSelection()));
@@ -105,6 +109,7 @@ public class JoueurServiceImpl implements IJoueurService {
 				    createNewJoueur.setSelection(selection);
 				    createNewJoueur.setClub(club);
 				    createNewJoueur.setConfederation(confederation);
+				    createNewJoueur.setCompte(compte);
 				
 				// Je sauve une entité dans la base			 
 				joueurRepository.save(createNewJoueur);
@@ -113,9 +118,11 @@ public class JoueurServiceImpl implements IJoueurService {
 	}
 
 	@Override
-	public PaginationResponse getAllJoueur(int pageNo,int pageSize,String sortBy) {
-				
-			PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
+	public PaginationResponse getAllJoueur(int pageNo,int pageSize,String sortBy, String dir) {
+			
+		 Sort.Direction sortDirection = dir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.Direction.ASC : Sort.Direction.DESC;
+		 PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortDirection, sortBy));
+			
 			Page<Joueur> listeDesJoueurs = joueurRepository.findAll(pageable);
 			List<Joueur> joueurs = listeDesJoueurs.getContent();
 			List<JoueurDTO> content = joueurs.stream().map(this::mapEntityToDto).collect(Collectors.toList());
@@ -144,10 +151,15 @@ public class JoueurServiceImpl implements IJoueurService {
 		Joueur joueur = joueurRepository
 				.findById(joueurId)
 				.orElseThrow(()-> new JoueurNotFoundException("Joueur", "id", joueurId));
+		
 						
-		Poste poste = posteRepository
+	 Poste poste = posteRepository
 				.findById(joueurCreateDto.getPoste())
 				.orElseThrow(()-> new PosteNotFoundException("Poste","id", joueurCreateDto.getPoste()));
+	 
+	 Compte compte  = compteRepository
+				.findById(joueurCreateDto.getCompte())
+				.orElseThrow(()-> new CompteNotFoundException("Compte","id", joueurCreateDto.getCompte()));
 				
 	  Selection selection = selectionRepository
 			  .findById(joueurCreateDto.getSelection())
@@ -169,6 +181,7 @@ public class JoueurServiceImpl implements IJoueurService {
 		joueur.setImageUrl(joueurCreateDto.getImageUrl());
 		joueur.setSurnom(joueurCreateDto.getSurnom());
 		joueur.setRate(joueurCreateDto.getRate());
+		
 		joueur.setImageUrlSelection(joueurCreateDto.getImageUrlSelection());
 		joueur.setDescription(joueurCreateDto.getDescription());
 		joueur.setNbrPointObtenu(joueurCreateDto.getNbrPointObtenu());
@@ -176,6 +189,7 @@ public class JoueurServiceImpl implements IJoueurService {
 		joueur.setClub(club);
 		joueur.setSelection(selection);
 		joueur.setPoste(poste);
+		joueur.setCompte(compte);
 		joueur.setConfederation(confederation);
 							
 		Joueur joueurUpdated = joueurRepository.save(joueur);
@@ -333,26 +347,6 @@ public class JoueurServiceImpl implements IJoueurService {
 		return pageJoueursResponse;
 	}
 
-	@Override
-	public JoueurDTO assignedTitreToJoueur(long joueurId, long titreId) {
-		Set<Titre> listeTitre = null;
-		Joueur joueur = joueurRepository
-				.findById(joueurId)
-				.orElseThrow(()-> new JoueurNotFoundException("Joueur", "id", joueurId));
-				
-		Titre titre = titreRepository
-				.findById(titreId)
-				.orElseThrow(()-> new TitreNotFoundException("Titre", "id",titreId));
-				
-		listeTitre = joueur.getAssignedTitres();
-		listeTitre.add(titre);
-		joueur.setAssignedTitres(listeTitre);
-		joueurRepository.save(joueur);
-		return mapEntityToDto(joueur);
-		
-	}
-
-	
 
 	@Override
 	public PaginationResponse getVainqueurBallondOr(int pageNo, int pageSize, String sortBy) {
@@ -479,8 +473,41 @@ public class JoueurServiceImpl implements IJoueurService {
 			return pageJoueursResponse;
 	}
 
-	
+	@Override
+	public PaginationResponse findJoueursByIds(List<Integer> ids, int pageNo, int pageSize, String sortBy) {
+		
+		 PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
+			Page<Joueur> joueursByIdsListe = joueurRepository.findByIds(ids,pageable);
+			List<Joueur> joueursByIds = joueursByIdsListe.getContent();
+			List<JoueurDTO> contentJoueurByIds  = joueursByIds.stream().map(this::mapEntityToDto).collect(Collectors.toList());
+			
+			PaginationResponse pageJoueursResponse = new PaginationResponse();
+			pageJoueursResponse.setContent(contentJoueurByIds);
+			pageJoueursResponse.setPageNo(joueursByIdsListe.getNumber());
+			pageJoueursResponse.setPageSize(joueursByIdsListe.getSize());
+			pageJoueursResponse.setTotalElements(joueursByIdsListe.getTotalElements());
+			pageJoueursResponse.setTotalPages(joueursByIdsListe.getTotalPages());
+			return pageJoueursResponse;
+	}
 
+	@Override
+	public PaginationResponse findByCompteId(long CompteId, int pageNo, int pageSize, String sortBy) {
+		PageRequest pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy));
+		Page<Joueur> listeDesJoueursByCompte = joueurRepository.findByCompteId(CompteId,pageable);
+		List<Joueur> joueursByCompte = listeDesJoueursByCompte.getContent();
+		List<JoueurDTO> content = joueursByCompte.stream().map(this::mapEntityToDto).collect(Collectors.toList());
+		
+		PaginationResponse pageJoueursResponse = new PaginationResponse();
+		pageJoueursResponse.setContent(content);
+		pageJoueursResponse.setPageNo(listeDesJoueursByCompte.getNumber());
+		pageJoueursResponse.setPageSize(listeDesJoueursByCompte.getSize());
+		pageJoueursResponse.setTotalElements(listeDesJoueursByCompte.getTotalElements());
+		pageJoueursResponse.setTotalPages(listeDesJoueursByCompte.getTotalPages());
+		
+		return pageJoueursResponse;
+	}
+
+	
 	
 
 

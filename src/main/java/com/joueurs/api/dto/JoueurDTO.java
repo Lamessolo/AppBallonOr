@@ -2,10 +2,6 @@ package com.joueurs.api.dto;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.List;
-
-
-import com.joueurs.api.entity.Titre;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class JoueurDTO implements Serializable {
 
-	private long id;
+	private Long id;
 
 	private String name;
 	
@@ -45,13 +41,13 @@ public class JoueurDTO implements Serializable {
 	
 	private SelectionDTO selection;
 	
+	private CompteDTO compte;
+		
 	private ConfederationDTO confederation;
 	
 	private String anneeRecompense;
 	
 	private ClubDTO club;
-	
-	private List<Titre> titres;
 	
 	private int age;
 	

@@ -1,5 +1,6 @@
 package com.joueurs.api.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import lombok.AllArgsConstructor;
@@ -11,18 +12,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TitreDTO {
-	
-	private int id ;
+public class CompteDTO implements Serializable {
 
-	private String name;
+	  private Long id;
+		 	
+	  private String name;
+		 	
+      private String prenom;
+
+	  private Date dateNaissance;
+	  
+	  
 	
-	private String description;
-	
-	private String confederation;
-	private String competition;
-	
-	private String type;
-	
-	private String anneeTitre;
 }

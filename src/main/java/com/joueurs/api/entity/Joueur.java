@@ -2,8 +2,6 @@ package com.joueurs.api.entity;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,8 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -30,7 +26,7 @@ public class Joueur implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 	
 	@Column(name="name")
 	private String name;
@@ -47,10 +43,9 @@ public class Joueur implements Serializable {
 	@Column(name="date_naissance")
 	private Date dateNaissance;
 	
-	//@OneToOne 
-	//@JoinColumn(name="poste_id",referencedColumnName="id")
+	
 	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 poste
-	@JoinColumn(name="poste_id", unique = false)
+	@JoinColumn(name="poste_id", referencedColumnName="id", unique = false)
 	private Poste poste;
 	
 	@Column(name="nbr_point_obtenu")
@@ -69,8 +64,7 @@ public class Joueur implements Serializable {
 	@Column(name="image_url_selection")
 	private String imageUrlSelection;
 	
-	//@OneToOne 
-	//@JoinColumn(name="selection_id",referencedColumnName="id")
+	
 	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 Selection
 	@JoinColumn(name="selection_id", unique = false)
 	private Selection selection;
@@ -82,19 +76,16 @@ public class Joueur implements Serializable {
 	@Column(name="annee_Recompense")
 	private String anneeRecompense;
 	
-	//@OneToOne 
-	//@JoinColumn(name="club_id", referencedColumnName="id")
+	
 	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 Club
-	@JoinColumn(name="club_id", unique = false)
+	@JoinColumn(name="club_id", referencedColumnName="id", unique = false)
 	private Club club;
 
-	@ManyToMany
-	@JoinTable(name="joueur_titre",
-	 joinColumns = @JoinColumn(name="joueur_id"),
-	 inverseJoinColumns = @JoinColumn (name="titre_id"))
-	private Set<Titre> assignedTitres = new HashSet<>();
 	
-	
+	@ManyToOne
+    @JoinColumn(name = "compte_id")
+    private Compte compte;
+
 	public int getAge() {
 		
 		return JoueurHelpers.calculAgeJoueurRecompense(dateNaissance,anneeRecompense);

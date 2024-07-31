@@ -23,7 +23,7 @@ import com.joueurs.api.utils.PaginationClubResponse;
 public class ClubServiceImpl implements IClubService {
 
 	private  ClubRepository clubRepository;
-	private ModelMapper mapper;
+	private   ModelMapper mapper;
 	    
 	   public ClubServiceImpl (ClubRepository clubRepository,ModelMapper mapper) {
 		   this.clubRepository = clubRepository;

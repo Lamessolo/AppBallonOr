@@ -2,19 +2,20 @@ package com.joueurs.api.utils;
 
 import java.util.List;
 
-import com.joueurs.api.dto.ClubDTO;
-import com.joueurs.api.dto.JoueurDTO;
+
+import com.joueurs.api.dto.ImageSourceDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class PaginationResponse {
+@AllArgsConstructor
+public class PaginationImageSourceResponse {
+
 	
-	private List<JoueurDTO> content;
+	private List<ImageSourceDTO> content;
 	private int pageNo;
 	private int pageSize;
 	private long totalElements;

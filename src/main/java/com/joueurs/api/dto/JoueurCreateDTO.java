@@ -1,9 +1,6 @@
 package com.joueurs.api.dto;
 
 import java.sql.Date;
-import java.util.List;
-
-import com.joueurs.api.entity.Titre;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +23,8 @@ public class JoueurCreateDTO {
 	
 	private String description;
 	
+	private String anneeRecompense;
+	
 	private String imageUrl;
 	
 	private String imageUrlSelection;
@@ -38,13 +37,11 @@ public class JoueurCreateDTO {
 	
 	private int rate;
 	
+	private long compte;
+	
 	private long selection;
 	
 	private long confederation;
-	
-	private String anneeRecompense;
-	
-	private List<Titre> titres;
 	
 	private long club;
 	

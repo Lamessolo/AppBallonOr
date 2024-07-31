@@ -1,6 +1,8 @@
 package com.joueurs.api.controller;
 
+
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.joueurs.api.utils.ConstanteApp;
 import com.joueurs.api.dto.JoueurCreateDTO;
 import com.joueurs.api.dto.JoueurDTO;
@@ -26,6 +29,7 @@ import com.joueurs.api.service.IJoueurService;
 import com.joueurs.api.utils.PaginationResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("api/joueur")
 @CrossOrigin
@@ -33,20 +37,20 @@ public class JoueurController {
 
 private  IJoueurService joueurService;
 
-	
 	public JoueurController(IJoueurService joueurService) {
 	this.joueurService = joueurService;
 }
 
 
 	@GetMapping("/all")
-	@Operation(summary = "Get ALL Joueurs", description = "This endpoint retrieve all joueur")
+	@Operation(summary = "Get ALL Joueurs", description = "This endpoint retrieve all joueur sorted by name")
 	public PaginationResponse getAllJoueurs(
 		@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
 		@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
-		@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy){
+		@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY_YEAR,required=false) String sortBy,
+		@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_DIRECTION,required=false) String dir){
 	 
-	return joueurService.getAllJoueur(pageNo,pageSize,sortBy);
+	return joueurService.getAllJoueur(pageNo,pageSize,sortBy,dir);
 	}
 	
 		
@@ -60,6 +64,7 @@ private  IJoueurService joueurService;
 	@PostMapping("/add")
 	@Operation(summary = "Create Joueur", description = "This endpoint create a Joueur") // Documentation Swagger
 	public ResponseEntity<JoueurDTO> createJoueur(@RequestBody JoueurCreateDTO joueurCreateDto){
+		
 		return new ResponseEntity<>(joueurService.createJoueur(joueurCreateDto), HttpStatus.CREATED);	
 	}
 		
@@ -182,5 +187,30 @@ private  IJoueurService joueurService;
 	        return joueurService.findByDateNaissance(date,pageNo,pageSize,sortBy);
 	    }
 	
+	
+	 // Endpoint pour récupérer la liste joueurs par leurs identifiants
+    @GetMapping("/preference")
+    @Operation(summary = "Get Joueurs by Ids", description = "This endpoint retrieves all preferences players")
+    public PaginationResponse getJoueursByIds(@RequestParam List<Integer> ids,
+    		@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
+			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
+			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy
+    		) {
+        return joueurService.findJoueursByIds(ids,pageNo,pageSize,sortBy);
+    }
+    
+    
+	 // Endpoint pour récupérer la liste joueurs ayant un meme compte
+    @GetMapping("/compte/{compteId}")
+    @Operation(summary = "Get Joueurs by compte id", description = "This endpoint retrieves all joueurs du meme compte")
+    public PaginationResponse getJoueursByCompteId(@PathVariable("compteId")int compteId,
+    		@RequestParam(value="pageNo",defaultValue= ConstanteApp.DEFAULT_PAGE_NUMBER,required=false) int pageNo,
+			@RequestParam(value="pageSize",defaultValue= ConstanteApp.DEFAULT_PAGE_SIZE,required=false) int pageSize,
+			@RequestParam(value="sortBy",defaultValue= ConstanteApp.DEFAULT_SORT_BY,required=false) String sortBy
+    		) {
+        return joueurService.findByCompteId(compteId,pageNo,pageSize,sortBy);
+    }
+    
+    	
 	
 }

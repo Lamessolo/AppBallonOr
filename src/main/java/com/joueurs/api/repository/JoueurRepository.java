@@ -30,6 +30,8 @@ public interface JoueurRepository extends JpaRepository<Joueur,Long> {
 	
 	Page<Joueur> findByConfederationId(@Param("id")long ConfederationId, PageRequest pageable);
 	
+	Page<Joueur> findByCompteId(@Param("id")long CompteId, PageRequest pageable);
+	
 	@Query("SELECT j FROM Joueur j  WHERE " 
 			+ "j.name LIKE CONCAT ('%',:name,'%')"
 		    + " OR j.prenom LIKE CONCAT ('%', :name,'%')")
@@ -69,6 +71,12 @@ public interface JoueurRepository extends JpaRepository<Joueur,Long> {
 	 
 	 
 	 Page<Joueur> findByDateNaissance(Date dateNaissance,PageRequest pageable);
+	 
+	 
+	 
+	 // Méthode pour récupérer un liste de joueurs par leurs identifiants
+	  @Query("SELECT j FROM Joueur j WHERE j.id IN :ids")
+	  Page<Joueur> findByIds(@Param("ids") List<Integer> ids, PageRequest pageable);
 	
 	
 

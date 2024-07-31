@@ -13,27 +13,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joueurs.api.dto.ClubCreateDTO;
 import com.joueurs.api.dto.ClubDTO;
-import com.joueurs.api.dto.JoueurDTO;
 import com.joueurs.api.service.IClubService;
-import com.joueurs.api.utils.ConstanteApp;
-import com.joueurs.api.utils.PaginationClubResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
+
 
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("api/club")
 @CrossOrigin
 public class ClubController {
 
-	private final IClubService clubService;
+	private IClubService clubService;
+	
+	public ClubController(IClubService clubService) {
+	this.clubService = clubService;
+}
 	
 	@GetMapping("/all")
 	@Operation(summary = "Get Clubs", description = "This endpoint retrieve all Clubs")

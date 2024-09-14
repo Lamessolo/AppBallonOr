@@ -28,7 +28,7 @@ jobs:
         echo "JAR_NAME=api-joueurs-${TIMESTAMP}.jar" >> $GITHUB_ENV
 
     - name: Archive build artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: jar-artifact
         path: target/*.jar

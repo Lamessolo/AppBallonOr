@@ -70,7 +70,7 @@ public class Joueur implements Serializable {
 	private Selection selection;
 	
 	@ManyToOne // Remplacez @OneToOne par @ManyToOne 1...* Joueurs -> 1 Confederation
-	@JoinColumn(name="confederation_id", unique = false, columnDefinition = "int default 1")
+	@JoinColumn(name="confederation_id", unique = false)
 	private Confederation confederation;
 	
 	@Column(name="annee_Recompense")

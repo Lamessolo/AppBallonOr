@@ -1,0 +1,1 @@
+web: java -jar target/api-joueurs-0.0.1.jar

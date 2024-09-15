@@ -24,7 +24,7 @@ jobs:
     - name: Rename JAR with versioning
       run: |
         TIMESTAMP=$(date +%Y%m%d%H%M%S)
-        mv target/api-joueurs-0.0.1-SNAPSHOT.jar target/api-joueurs-${TIMESTAMP}.jar
+        mv target/api-joueurs-0.0.1.jar target/api-joueurs-${TIMESTAMP}.jar
         echo "JAR_NAME=api-joueurs-${TIMESTAMP}.jar" >> $GITHUB_ENV
 
     - name: Archive build artifacts

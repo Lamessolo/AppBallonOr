@@ -10,11 +10,11 @@
 	</parent>
 	<groupId>com.joueurs.api</groupId>
 	<artifactId>api-joueurs</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>APIJoueurs</name>
 	<description> API Spring Boot Joueurs</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -126,6 +126,16 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
+			<plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-compiler-plugin</artifactId>
+		      <version>3.11.0</version>
+		      		<configuration>
+				        <source>17</source>
+				        <target>17</target>
+				        <release>17</release> <!-- Assurez-vous que cela correspond à votre version Java -->
+		      		</configuration>
+    			</plugin>
+			</plugins>
 	</build>
 </project>

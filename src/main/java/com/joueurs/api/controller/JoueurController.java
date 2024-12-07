@@ -40,6 +40,13 @@ private  IJoueurService joueurService;
 	public JoueurController(IJoueurService joueurService) {
 	this.joueurService = joueurService;
 }
+	
+	
+	@GetMapping("/status")
+	public  String TestControllerStatus() {
+		
+		return "OK : Vous avez acces au controller Joueur";
+	}
 
 
 	@GetMapping("/all")

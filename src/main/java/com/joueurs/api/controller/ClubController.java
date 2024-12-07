@@ -35,6 +35,12 @@ public class ClubController {
 	this.clubService = clubService;
 }
 	
+	@GetMapping("/status")
+	public  String TestControllerStatus() {
+		
+		return "OK : Vous avez acces au controller Club";
+	}
+	
 	@GetMapping("/all")
 	@Operation(summary = "Get Clubs", description = "This endpoint retrieve all Clubs")
 	public List<ClubDTO> getAllClubs()
